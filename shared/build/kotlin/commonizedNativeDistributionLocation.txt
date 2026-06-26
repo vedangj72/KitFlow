@@ -1,0 +1,1 @@
+/Users/vedang/.konan/kotlin-native-prebuilt-macos-aarch64-2.4.0/klib/commonized/2.4.0
