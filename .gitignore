@@ -1,0 +1,26 @@
+# Built outputs
+build/
+*.class
+*.jar
+*.aar
+
+# Gradle
+.gradle/
+!gradle/wrapper/gradle-wrapper.jar
+
+# Local configuration (contains secrets)
+local.properties
+gradle.properties
+
+# Kotlin
+.kotlin/
+
+# IDE
+.idea/
+*.iml
+
+# macOS
+.DS_Store
+
+# Konan
+.konan/

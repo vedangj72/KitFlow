@@ -1,0 +1,15 @@
+# Copy these values into your user-level ~/.gradle/gradle.properties or pass them
+# from CI secrets. Do not commit real credentials.
+
+mavenCentralUsername=
+mavenCentralPassword=
+
+# File-based signing.
+signing.keyId=
+signing.password=
+signing.secretKeyRingFile=
+
+# Or in-memory signing.
+signingInMemoryKeyId=
+signingInMemoryKey=
+signingInMemoryKeyPassword=
