@@ -12,7 +12,7 @@ plugins {
 }
 
 group = "io.github.vedangj72"
-version = "1.0.0"
+version = "1.0.1"
 
 kotlin {
     // iOS targets
