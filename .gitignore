@@ -14,6 +14,7 @@ gradle.properties
 
 # Kotlin
 .kotlin/
+kotlin-js-store/
 
 # IDE
 .idea/
