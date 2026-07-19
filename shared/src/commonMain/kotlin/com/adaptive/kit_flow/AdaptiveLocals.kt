@@ -9,3 +9,11 @@ val LocalAdaptiveWindowInfo = staticCompositionLocalOf {
 val LocalAdaptiveBreakpoint = staticCompositionLocalOf {
     AdaptiveBreakpoint.SM
 }
+
+val LocalAdaptiveLayoutBreakpoint = staticCompositionLocalOf {
+    AdaptiveBreakpoint.SM
+}
+
+val LocalAdaptiveOrientation = staticCompositionLocalOf {
+    AdaptiveOrientation.Unknown
+}

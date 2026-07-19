@@ -33,3 +33,4 @@ plugins {
 }
 
 include(":shared")
+include(":sample-desktop")

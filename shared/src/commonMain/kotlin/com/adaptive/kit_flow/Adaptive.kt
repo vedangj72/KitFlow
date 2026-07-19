@@ -19,4 +19,20 @@ object Adaptive {
         tab = tab,
         desktop = desktop
     )
+
+    @Composable
+    fun onOrientationChange(
+        portrait: @Composable (AdaptiveWindowInfo) -> Unit,
+        landscape: @Composable (AdaptiveWindowInfo) -> Unit,
+        square: (@Composable (AdaptiveWindowInfo) -> Unit)? = null,
+        unknown: (@Composable (AdaptiveWindowInfo) -> Unit)? = null
+    ) {
+        val windowInfo = LocalAdaptiveWindowInfo.current
+        when (windowInfo.orientation) {
+            AdaptiveOrientation.Portrait -> portrait(windowInfo)
+            AdaptiveOrientation.Landscape -> landscape(windowInfo)
+            AdaptiveOrientation.Square -> (square ?: portrait)(windowInfo)
+            AdaptiveOrientation.Unknown -> (unknown ?: portrait)(windowInfo)
+        }
+    }
 }

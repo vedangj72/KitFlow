@@ -28,7 +28,9 @@ fun KitFlowAdaptiveProvider(
 
         CompositionLocalProvider(
             LocalAdaptiveWindowInfo provides windowInfo,
-            LocalAdaptiveBreakpoint provides windowInfo.breakpoint,
+            LocalAdaptiveBreakpoint provides windowInfo.screenClass,
+            LocalAdaptiveLayoutBreakpoint provides windowInfo.layoutClass,
+            LocalAdaptiveOrientation provides windowInfo.orientation,
             content = content
         )
     }
