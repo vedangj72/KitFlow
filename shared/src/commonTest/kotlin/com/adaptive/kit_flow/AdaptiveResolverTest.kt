@@ -1,7 +1,7 @@
 package com.adaptive.kit_flow
 
-import com.adaptive.kit_flow.internal.BreakpointResolver
-import com.adaptive.kit_flow.internal.WindowInfoResolver
+import com.adaptive.kit_flow.modules.breakpoint.internal.BreakpointResolver
+import com.adaptive.kit_flow.modules.window.internal.WindowInfoResolver
 import kotlin.test.Test
 import kotlin.test.assertEquals
 

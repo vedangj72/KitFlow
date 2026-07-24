@@ -6,8 +6,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import com.adaptive.kit_flow.internal.WindowInfoResolver
-import kotlin.math.roundToInt
+import com.adaptive.kit_flow.modules.breakpoint.AdaptiveBreakpointThresholds
+import com.adaptive.kit_flow.modules.window.AdaptiveWindowInfo
+import com.adaptive.kit_flow.modules.window.internal.WindowInfoResolver
+import com.adaptive.kit_flow.utils.sanitizeDp
 
 @Composable
 fun KitFlowAdaptiveProvider(
@@ -39,6 +41,3 @@ fun KitFlowAdaptiveProvider(
 @Composable
 fun rememberWindowInfo(): AdaptiveWindowInfo =
     LocalAdaptiveWindowInfo.current
-
-private fun Float.sanitizeDp(): Int =
-    takeIf { it.isFinite() && it > 0f }?.roundToInt() ?: 0

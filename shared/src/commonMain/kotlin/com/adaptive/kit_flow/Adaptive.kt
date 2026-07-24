@@ -1,7 +1,9 @@
 package com.adaptive.kit_flow
 
 import androidx.compose.runtime.Composable
-import com.adaptive.kit_flow.internal.BreakpointResolver
+import com.adaptive.kit_flow.modules.breakpoint.internal.BreakpointResolver
+import com.adaptive.kit_flow.modules.orientation.AdaptiveOrientation
+import com.adaptive.kit_flow.modules.window.AdaptiveWindowInfo
 
 object Adaptive {
     @Composable

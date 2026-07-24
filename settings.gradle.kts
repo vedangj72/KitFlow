@@ -33,4 +33,5 @@ plugins {
 }
 
 include(":shared")
-include(":sample-desktop")
+include(":manual-testing:android")
+include(":manual-testing:desktop")
