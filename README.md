@@ -1,3 +1,4 @@
+<img width="1200" height="1200" alt="Untitled design" src="https://github.com/user-attachments/assets/38ab69f7-ee8e-411d-ac40-c91ab60d65cc" />
 # KitFlow
 
 KitFlow is a Kotlin Multiplatform SDK for building adaptive Compose UI with small, reusable utilities.
