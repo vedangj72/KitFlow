@@ -33,6 +33,7 @@ import com.adaptive.kit_flow.accessibility.AdaptiveAccessibleLayout
 import com.adaptive.kit_flow.accessibility.LocalAdaptiveAccessibilityInfo
 import com.adaptive.kit_flow.accessibility.adaptiveSemantics
 import com.adaptive.kit_flow.accessibility.adaptiveTouchTarget
+import com.adaptive.kit_flow.layout.AdaptiveFlowGrid
 import com.adaptive.kit_flow.rememberWindowInfo
 
 class MainActivity : ComponentActivity() {
@@ -98,6 +99,15 @@ private fun AndroidDemoScreen() {
             InfoRow("minimumTouchTarget", accessibilityInfo.minimumTouchTarget.toString())
             InfoRow("reducedMotion", accessibilityInfo.reducedMotion.toString())
 
+            AdaptiveFlowGrid(
+                minColumnWidth = 160.dp,
+                maxColumns = 3
+            ) {
+                repeat(4) { index ->
+                    DemoPanel(index + 1)
+                }
+            }
+
             Card(shape = RoundedCornerShape(cardRadius)) {
                 Box(
                     modifier = Modifier
@@ -131,6 +141,18 @@ private fun AndroidDemoScreen() {
                 }
             )
         }
+    }
+}
+
+@Composable
+private fun DemoPanel(index: Int) {
+    Box(
+        modifier = Modifier
+            .background(Color(0xFFF2EDFF), RoundedCornerShape(12.dp))
+            .padding(16.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Text("Adaptive panel $index")
     }
 }
 
