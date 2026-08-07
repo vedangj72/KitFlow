@@ -16,6 +16,10 @@ gradle.properties
 .kotlin/
 kotlin-js-store/
 
+# Python developer tools
+__pycache__/
+*.py[cod]
+
 # IDE
 .idea/
 *.iml

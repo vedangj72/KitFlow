@@ -27,6 +27,11 @@ dependencies {
 
 Use the latest version you have published.
 
+> [!IMPORTANT]
+> `Adaptive.layoutValue`, `AdaptiveFlowGrid`, and the local layout advisor below
+> are currently unreleased source features on this branch. Maven Central
+> version `1.0.3` does not contain them yet.
+
 ## 2. Wrap Your App
 
 Use `AdaptiveKitProvider` once near the root of your Compose app.
@@ -192,7 +197,57 @@ orientation = Portrait / Landscape / Square / Unknown
 
 This prevents a phone from being treated like a tablet only because it rotated.
 
-## 8. Accessibility
+Use `Adaptive.layoutValue(...)` when a value should follow the **current available width**,
+including rotation, split screen, and window resizing.
+
+```kotlin
+val paneCount = Adaptive.layoutValue(
+    sm = 1,
+    md = 1,
+    lg = 2,
+    tab = 3,
+    desktop = 4
+)
+```
+
+`Adaptive.value(...)` remains shortest-side based for stable visual values;
+`Adaptive.layoutValue(...)` is width based for reflow decisions.
+
+## 8. Automatic Flow Grid
+
+`AdaptiveFlowGrid` automatically fits equal-width columns inside its actual
+parent constraints. This makes reusable components respond to phones,
+rotation, split screen, and resizable windows without device-name checks.
+
+```kotlin
+import com.adaptive.kit_flow.layout.AdaptiveFlowGrid
+
+AdaptiveFlowGrid(
+    minColumnWidth = 160.dp,
+    maxColumns = 3,
+    horizontalSpacing = 12.dp,
+    verticalSpacing = 12.dp
+) {
+    repeat(6) { index ->
+        Card {
+            Text("Item $index", Modifier.padding(16.dp))
+        }
+    }
+}
+```
+
+Large system text increases the effective minimum column width by default, so
+the grid wraps earlier instead of squeezing text. Set `fontScaleAware = false`
+only when the content does not contain text.
+
+The grid is eager and is intended for a small group of panels, cards, or
+controls. Continue using `LazyVerticalGrid` for long or unbounded collections.
+Apply safe-area or window-inset padding outside the grid; the remaining usable
+width is then handled automatically. Children keep their natural height. If a
+parent imposes a smaller height, use scrolling, a lazy grid, or opt in to
+`clipOverflow = true` when clipped overflow is the intended behavior.
+
+## 9. Accessibility
 
 KitFlow helps keep UI stable when font scale increases.
 
@@ -259,7 +314,7 @@ AdaptiveIconButton(
 
 **Icon-only buttons must have meaningful labels.**
 
-## 9. Compose Layout Notes
+## 10. Compose Layout Notes
 
 There are certain things to keep in mind while making layouts or components in Jetpack Compose:
 
@@ -328,7 +383,28 @@ when (info.layoutClass) {
 
 **KitFlow does not remove the need to understand Compose layout.** It helps you arrange adaptive code in one clear flow.
 
-## 10. Official Notes
+## 11. Optional Local Layout Advisor
+
+KitFlow includes an optional development-time advisor under
+[`tools/layout-advisor`](tools/layout-advisor). It asks an already-installed
+model on a loopback Ollama-compatible server for conservative
+`AdaptiveFlowGrid` parameters, validates the structured response, and prints a
+copy-paste Kotlin snippet.
+
+```powershell
+python tools/layout-advisor/layout_advisor.py `
+  "Product cards with a 16:9 image, two-line title, and two actions"
+```
+
+The advisor uses only Python's standard library. It is not part of the Gradle
+build or published KitFlow artifacts, and it never downloads or embeds model
+weights. Runtime layout remains deterministic, fast, testable, and offline.
+
+See the [advisor guide](tools/layout-advisor/README.md) and Ollama's
+[local API](https://docs.ollama.com/api/introduction) and
+[structured-output documentation](https://docs.ollama.com/capabilities/structured-outputs).
+
+## 12. Official Notes
 
 Keep these official docs close while designing adaptive Compose UI:
 
