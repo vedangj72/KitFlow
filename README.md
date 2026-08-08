@@ -247,6 +247,10 @@ width is then handled automatically. Children keep their natural height. If a
 parent imposes a smaller height, use scrolling, a lazy grid, or opt in to
 `clipOverflow = true` when clipped overflow is the intended behavior.
 
+Run the [adaptive layout showcase](manual-testing/README.md) to explore phone,
+landscape, tablet, square, density, and font-scale scenarios in the Desktop
+Window Lab or on a real Android device.
+
 ## 9. Accessibility
 
 KitFlow helps keep UI stable when font scale increases.
