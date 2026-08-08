@@ -2,6 +2,7 @@ import com.vanniktech.maven.publish.KotlinMultiplatform
 import com.vanniktech.maven.publish.SonatypeHost
 import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.gradle.plugins.signing.SigningExtension
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -12,7 +13,7 @@ plugins {
 }
 
 group = "io.github.vedangj72"
-version = "1.0.3"
+version = "1.0.4"
 
 kotlin {
     // iOS targets
@@ -109,5 +110,35 @@ mavenPublishing {
             developerConnection.set("scm:git:ssh://github.com/vedangj72/KitFlow.git")
             url.set("https://github.com/vedangj72/KitFlow")
         }
+        extensions.configure<SigningExtension> {
+            val signingKeyId =
+                findProperty("signingInMemoryKeyId") as String?
+
+            val signingKey =
+                findProperty("signingInMemoryKey") as String?
+
+            val signingPassword =
+                findProperty("signingInMemoryKeyPassword") as String?
+
+            useInMemoryPgpKeys(
+                signingKeyId,
+                signingKey,
+                signingPassword
+            )
+        }
     }
+
+}
+
+extensions.configure<SigningExtension> {
+    val signingKey =
+        findProperty("signingInMemoryKey") as String?
+
+    val signingPassword =
+        findProperty("signingInMemoryKeyPassword") as String?
+
+    useInMemoryPgpKeys(
+        signingKey,
+        signingPassword
+    )
 }
