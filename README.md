@@ -28,7 +28,7 @@ dependencies {
 Use the latest version you have published.
 
 > [!IMPORTANT]
-> `Adaptive.layoutValue`, `AdaptiveFlowGrid`, and the local layout advisor below
+> `Adaptive.layoutValue` and `AdaptiveFlowGrid`
 > are currently unreleased source features on this branch. Maven Central
 > version `1.0.3` does not contain them yet.
 
@@ -383,28 +383,7 @@ when (info.layoutClass) {
 
 **KitFlow does not remove the need to understand Compose layout.** It helps you arrange adaptive code in one clear flow.
 
-## 11. Optional Local Layout Advisor
-
-KitFlow includes an optional development-time advisor under
-[`tools/layout-advisor`](tools/layout-advisor). It asks an already-installed
-model on a loopback Ollama-compatible server for conservative
-`AdaptiveFlowGrid` parameters, validates the structured response, and prints a
-copy-paste Kotlin snippet.
-
-```powershell
-python tools/layout-advisor/layout_advisor.py `
-  "Product cards with a 16:9 image, two-line title, and two actions"
-```
-
-The advisor uses only Python's standard library. It is not part of the Gradle
-build or published KitFlow artifacts, and it never downloads or embeds model
-weights. Runtime layout remains deterministic, fast, testable, and offline.
-
-See the [advisor guide](tools/layout-advisor/README.md) and Ollama's
-[local API](https://docs.ollama.com/api/introduction) and
-[structured-output documentation](https://docs.ollama.com/capabilities/structured-outputs).
-
-## 12. Official Notes
+## 11. Official Notes
 
 Keep these official docs close while designing adaptive Compose UI:
 
