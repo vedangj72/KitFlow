@@ -30,7 +30,7 @@ KitFlow helps you create responsive layouts across Android, iOS, Desktop and Web
 
 ## KitFlow Mark
 
-<img src="docs/assets/icons/kitflow-mark.svg" alt="KitFlow logo" width="160" height="160" />
+<img src="docs/assets/icons/kitflow_icon.png" alt="KitFlow logo" width="160" height="160" />
 
 KitFlow is built around a clean, reusable adaptive layer. The mark reflects that idea: a shared core with responsive motion and layout around it.
 
