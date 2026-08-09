@@ -1,0 +1,8 @@
+interface:
+  display_name: "Claude"
+  short_description: "Claude-oriented SDK prompting"
+  default_prompt: "Use $claude to work on KitFlow SDK tasks in the shared module with Claude-specific prompting and reasoning."
+
+policy:
+  allow_implicit_invocation: true
+
