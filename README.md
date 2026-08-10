@@ -1,6 +1,6 @@
 # KitFlow
 
-<video controls playsinline width="100%" src="https://res.cloudinary.com/dgsreulhd/video/upload/v1786301010/main_ui_demo_rcjhan.mp4" title="Main UI Demo"></video>
+https://res.cloudinary.com/dgsreulhd/video/upload/v1786301010/main_ui_demo_rcjhan.mp4
 
 Build truly adaptive Kotlin Multiplatform applications using a single shared UI.
 
@@ -111,7 +111,7 @@ KitFlow solves the problem of keeping adaptive UI logic readable, reusable, and 
 
 ## Adaptive.value()
 
-<video controls playsinline width="100%" src="https://res.cloudinary.com/dgsreulhd/video/upload/v1786300968/adptive_value_explination_qzdpky.mp4" title="Adaptive.value Demo"></video>
+https://res.cloudinary.com/dgsreulhd/video/upload/v1786300968/adptive_value_explination_qzdpky.mp4
 
 Every UI value can adapt based on screen size.
 
@@ -182,9 +182,9 @@ This becomes the foundation for creating responsive Compose UIs.
 
 ## Orientation Handling
 
-<video controls playsinline width="100%" src="https://res.cloudinary.com/dgsreulhd/video/upload/v1786300958/orientation_android_olbjfh.mp4" title="Android Orientation Demo"></video>
+https://res.cloudinary.com/dgsreulhd/video/upload/v1786300958/orientation_android_olbjfh.mp4
 
-<video controls playsinline width="100%" src="https://res.cloudinary.com/dgsreulhd/video/upload/v1786300967/orientation_ios_qeoiih.mp4" title="iOS Orientation Demo"></video>
+https://res.cloudinary.com/dgsreulhd/video/upload/v1786300967/orientation_ios_qeoiih.mp4
 
 Use `Adaptive.onOrientationChange(...)` when portrait and landscape should genuinely render different content.
 
