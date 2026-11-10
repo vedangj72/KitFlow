@@ -20,6 +20,31 @@ data class AdaptiveWindowInfo(
     val breakpoint: AdaptiveBreakpoint
         get() = screenClass
 
+    val isPortrait: Boolean
+        get() = orientation == AdaptiveOrientation.Portrait
+
+    val isLandscape: Boolean
+        get() = orientation == AdaptiveOrientation.Landscape
+
+    val isMobile: Boolean
+        get() = device == AdaptiveDevice.Mobile
+
+    val isTablet: Boolean
+        get() = device == AdaptiveDevice.Tablet
+
+    val isDesktop: Boolean
+        get() = device == AdaptiveDevice.Desktop
+
+    val isCompact: Boolean
+        get() = layoutClass <= AdaptiveBreakpoint.MD
+
+    val isExpanded: Boolean
+        get() = layoutClass >= AdaptiveBreakpoint.TAB
+
+    fun isWidthAtLeast(minDp: Int): Boolean = widthDp >= minDp
+
+    fun isAtLeast(breakpoint: AdaptiveBreakpoint): Boolean = layoutClass >= breakpoint
+
     companion object {
         val Unknown = AdaptiveWindowInfo(
             widthDp = 0,

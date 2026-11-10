@@ -1,11 +1,67 @@
 package com.adaptive.kit_flow
 
 import androidx.compose.runtime.Composable
+import com.adaptive.kit_flow.modules.breakpoint.AdaptiveBreakpoint
 import com.adaptive.kit_flow.modules.breakpoint.internal.BreakpointResolver
 import com.adaptive.kit_flow.modules.orientation.AdaptiveOrientation
 import com.adaptive.kit_flow.modules.window.AdaptiveWindowInfo
 
 object Adaptive {
+    /**
+     * The current [AdaptiveWindowInfo] from the active provider.
+     */
+    val currentInfo: AdaptiveWindowInfo
+        @Composable get() = LocalAdaptiveWindowInfo.current
+
+    /**
+     * The stable screen class based on the window's shortest side.
+     */
+    val currentBreakpoint: AdaptiveBreakpoint
+        @Composable get() = LocalAdaptiveBreakpoint.current
+
+    /**
+     * The layout class based on the window's current available width.
+     */
+    val currentLayoutBreakpoint: AdaptiveBreakpoint
+        @Composable get() = LocalAdaptiveLayoutBreakpoint.current
+
+    /**
+     * The current screen orientation.
+     */
+    val currentOrientation: AdaptiveOrientation
+        @Composable get() = LocalAdaptiveOrientation.current
+
+    /**
+     * Whether the window orientation is currently Portrait.
+     */
+    val isPortrait: Boolean
+        @Composable get() = LocalAdaptiveOrientation.current == AdaptiveOrientation.Portrait
+
+    /**
+     * Whether the window orientation is currently Landscape.
+     */
+    val isLandscape: Boolean
+        @Composable get() = LocalAdaptiveOrientation.current == AdaptiveOrientation.Landscape
+
+    /**
+     * Whether the current layout width is tablet or wider ([AdaptiveBreakpoint.TAB] or higher).
+     */
+    val isWide: Boolean
+        @Composable get() = LocalAdaptiveLayoutBreakpoint.current >= AdaptiveBreakpoint.TAB
+
+    /**
+     * Checks if the current window width in DP is at least [minDp].
+     */
+    @Composable
+    fun isWidthAtLeast(minDp: Int): Boolean =
+        LocalAdaptiveWindowInfo.current.widthDp >= minDp
+
+    /**
+     * Checks if the current layout breakpoint is at least [breakpoint].
+     */
+    @Composable
+    fun isAtLeast(breakpoint: AdaptiveBreakpoint): Boolean =
+        LocalAdaptiveLayoutBreakpoint.current >= breakpoint
     /**
      * Resolves a value from the stable screen class (the window's shortest
      * side). Use this for values that should not jump when a phone rotates.
