@@ -12,15 +12,21 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Window
@@ -33,6 +39,8 @@ import com.adaptive.kit_flow.accessibility.LocalAdaptiveAccessibilityInfo
 import com.adaptive.kit_flow.accessibility.adaptiveSemantics
 import com.adaptive.kit_flow.accessibility.adaptiveTouchTarget
 import com.adaptive.kit_flow.layout.AdaptiveFlowGrid
+import com.adaptive.kit_flow.modules.kitcomponent.KitNavItem
+import com.adaptive.kit_flow.modules.kitcomponent.KitNavScaffold
 import com.adaptive.kit_flow.rememberWindowInfo
 
 fun main() = application {
@@ -41,9 +49,89 @@ fun main() = application {
         title = "KitFlow Live Test",
         state = rememberWindowState(width = 420.dp, height = 760.dp)
     ) {
+        val navItems = remember {
+            listOf(
+                KitNavItem(id = "home", title = "Home"),
+                KitNavItem(id = "explore", title = "Explore"),
+                KitNavItem(id = "profile", title = "Profile"),
+                KitNavItem(id = "settings", title = "Settings")
+            )
+        }
+
         MaterialTheme {
             AdaptiveKitProvider {
-                DemoScreen()
+                KitNavScaffold(
+                    navItems = navItems,
+                    header = {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = "KitFlow App",
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 18.sp
+                            )
+                        }
+                    },
+                    toolbar = {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "KitFlow",
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 18.sp
+                            )
+                        }
+                    },
+                    footer = {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 24.dp, vertical = 16.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(text = "© 2026 KitFlow Multiplatform", fontSize = 12.sp)
+                            Text(text = "Privacy • Terms • Support", fontSize = 12.sp)
+                        }
+                    }
+                ) { currentItem ->
+                    when (currentItem.id) {
+                        "home" -> DemoScreen()
+                        "explore" -> DummyScreen(title = "Explore Trending")
+                        "profile" -> DummyScreen(title = "User Profile")
+                        "settings" -> DummyScreen(title = "App Settings")
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun DummyScreen(title: String) {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
+    ) {
+        item {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.Bold
+            )
+        }
+        items(20) { index ->
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp)
+            ) {
+                Text(text = "$title — Sample Card #${index + 1}")
             }
         }
     }
@@ -79,6 +167,7 @@ private fun DemoScreen() {
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .verticalScroll(rememberScrollState())
                 .padding(screenPadding),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
