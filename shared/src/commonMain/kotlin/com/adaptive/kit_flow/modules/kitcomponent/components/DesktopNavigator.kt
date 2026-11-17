@@ -1,4 +1,4 @@
-package com.adaptive.kit_flow.modules.kitcomponent
+package com.adaptive.kit_flow.modules.kitcomponent.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -15,6 +15,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.adaptive.kit_flow.modules.kitcomponent.KitNavItem
+import com.adaptive.kit_flow.modules.kitcomponent.utils.NavItemsPosition
 
 /**
  * Top bar navigator for Web and Desktop layouts.
@@ -25,11 +27,18 @@ internal fun DesktopTopBarNavigator(
     navItems: List<KitNavItem>,
     activeItem: KitNavItem,
     onItemSelected: (KitNavItem) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    position: NavItemsPosition = NavItemsPosition.END
 ) {
+    val arrangement = when (position) {
+        NavItemsPosition.START -> Arrangement.spacedBy(20.dp, Alignment.Start)
+        NavItemsPosition.MID -> Arrangement.spacedBy(20.dp, Alignment.CenterHorizontally)
+        NavItemsPosition.END -> Arrangement.spacedBy(20.dp, Alignment.End)
+    }
+
     Row(
         modifier = modifier,
-        horizontalArrangement = Arrangement.spacedBy(20.dp),
+        horizontalArrangement = arrangement,
         verticalAlignment = Alignment.CenterVertically
     ) {
         navItems.forEach { item ->

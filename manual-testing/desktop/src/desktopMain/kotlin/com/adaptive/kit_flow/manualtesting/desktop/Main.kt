@@ -17,7 +17,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -47,7 +46,8 @@ fun main() = application {
     Window(
         onCloseRequest = ::exitApplication,
         title = "KitFlow Live Test",
-        state = rememberWindowState(width = 420.dp, height = 760.dp)
+        // Start at 1024.dp so Web/Desktop mode + Footer are visible immediately; drag narrower to test Mobile mode
+        state = rememberWindowState(width = 1024.dp, height = 760.dp)
     ) {
         val navItems = remember {
             listOf(
@@ -85,16 +85,50 @@ fun main() = application {
                             )
                         }
                     },
-                    footer = {
+                    footer = { onNavigate ->
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
+                                .background(Color(0xFFF3F4F6))
                                 .padding(horizontal = 24.dp, vertical = 16.dp),
                             horizontalArrangement = Arrangement.SpaceBetween,
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(text = "© 2026 KitFlow Multiplatform", fontSize = 12.sp)
-                            Text(text = "Privacy • Terms • Support", fontSize = 12.sp)
+
+                            Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+                                // 1. Navigates to an existing top-bar tab & highlights "Settings"
+                                Text(
+                                    text = "Settings",
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = Color(0xFF2563EB),
+                                    modifier = Modifier.clickable { onNavigate("settings") }
+                                )
+                                Text(
+                                    text = "Profile",
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = Color(0xFF2563EB),
+                                    modifier = Modifier.clickable { onNavigate("profile") }
+                                )
+                                // 2. Navigates to a footer-only SPA route inside body
+                                Text(
+                                    text = "Privacy Policy",
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = Color(0xFF2563EB),
+                                    modifier = Modifier.clickable { onNavigate("privacy") }
+                                )
+                                // 3. Navigates to another footer-only SPA route inside body
+                                Text(
+                                    text = "Terms",
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = Color(0xFF2563EB),
+                                    modifier = Modifier.clickable { onNavigate("terms") }
+                                )
+                            }
                         }
                     }
                 ) { currentItem ->
@@ -103,6 +137,9 @@ fun main() = application {
                         "explore" -> DummyScreen(title = "Explore Trending")
                         "profile" -> DummyScreen(title = "User Profile")
                         "settings" -> DummyScreen(title = "App Settings")
+                        // Footer-only routes rendered inside the same SPA body
+                        "privacy" -> DummyScreen(title = "Privacy Policy (Opened from Footer)")
+                        "terms" -> DummyScreen(title = "Terms of Service (Opened from Footer)")
                     }
                 }
             }
