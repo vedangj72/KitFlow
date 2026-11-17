@@ -1,4 +1,4 @@
-package com.adaptive.kit_flow.modules.kitcomponent
+package com.adaptive.kit_flow.modules.kitcomponent.utils
 
 import androidx.compose.ui.graphics.vector.ImageVector
 

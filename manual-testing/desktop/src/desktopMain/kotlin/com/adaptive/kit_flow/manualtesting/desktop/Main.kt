@@ -21,7 +21,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -38,8 +41,9 @@ import com.adaptive.kit_flow.accessibility.LocalAdaptiveAccessibilityInfo
 import com.adaptive.kit_flow.accessibility.adaptiveSemantics
 import com.adaptive.kit_flow.accessibility.adaptiveTouchTarget
 import com.adaptive.kit_flow.layout.AdaptiveFlowGrid
-import com.adaptive.kit_flow.modules.kitcomponent.KitNavItem
-import com.adaptive.kit_flow.modules.kitcomponent.KitNavScaffold
+import com.adaptive.kit_flow.modules.kitcomponent.utils.KitNavItem
+import com.adaptive.kit_flow.modules.kitcomponent.scaffoldings.KitNavScaffold
+import com.adaptive.kit_flow.modules.kitcomponent.utils.NavItemsPosition
 import com.adaptive.kit_flow.rememberWindowInfo
 
 fun main() = application {
@@ -56,10 +60,12 @@ fun main() = application {
                 KitNavItem(id = "settings", title = "Settings")
             )
         }
+        var navPosition by remember { mutableStateOf(NavItemsPosition.MID) }
 
         MaterialTheme {
             AdaptiveKitProvider {
                 KitNavScaffold(
+                    navItemsPosition = navPosition,
                     navItems = navItems,
                     header = {
                         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -69,6 +75,38 @@ fun main() = application {
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 18.sp
                             )
+                            Spacer(modifier = Modifier.width(16.dp))
+                            Row(
+                                modifier = Modifier
+                                    .background(Color(0xFFE5E7EB), RoundedCornerShape(8.dp))
+                                    .padding(2.dp),
+                                horizontalArrangement = Arrangement.spacedBy(4.dp)
+                            ) {
+                                listOf(
+                                    NavItemsPosition.START to "Start",
+                                    NavItemsPosition.MID to "Mid",
+                                    NavItemsPosition.END to "End"
+                                ).forEach { (pos, label) ->
+                                    val active = navPosition == pos
+                                    Box(
+                                        modifier = Modifier
+                                            .background(
+                                                if (active) Color.White else Color.Transparent,
+                                                RoundedCornerShape(6.dp)
+                                            )
+                                            .clickable { navPosition = pos }
+                                            .padding(horizontal = 10.dp, vertical = 4.dp),
+                                        contentAlignment = Alignment.Center
+                                    ) {
+                                        Text(
+                                            text = label,
+                                            fontSize = 12.sp,
+                                            fontWeight = if (active) FontWeight.Bold else FontWeight.Normal,
+                                            color = if (active) Color(0xFF1F2937) else Color(0xFF6B7280)
+                                        )
+                                    }
+                                }
+                            }
                         }
                     },
                     toolbar = {

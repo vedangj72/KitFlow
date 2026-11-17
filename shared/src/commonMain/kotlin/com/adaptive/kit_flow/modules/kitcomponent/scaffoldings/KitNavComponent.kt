@@ -1,4 +1,4 @@
-package com.adaptive.kit_flow.modules.kitcomponent
+package com.adaptive.kit_flow.modules.kitcomponent.scaffoldings
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,8 +20,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.adaptive.kit_flow.modules.kitcomponent.utils.KitNavItem
 import com.adaptive.kit_flow.modules.kitcomponent.components.DesktopTopBarNavigator
 import com.adaptive.kit_flow.modules.kitcomponent.components.MobileBottomBarNavigator
+import com.adaptive.kit_flow.modules.kitcomponent.isMobile
+import com.adaptive.kit_flow.modules.kitcomponent.isTab
+import com.adaptive.kit_flow.modules.kitcomponent.isWeb
 import com.adaptive.kit_flow.modules.kitcomponent.utils.NavItemsPosition
 
 /**
@@ -39,7 +43,7 @@ import com.adaptive.kit_flow.modules.kitcomponent.utils.NavItemsPosition
  * @param toolbar Optional composable rendered as the top app bar on Mobile/Tablet displays.
  * @param footer Optional composable pinned at the bottom of the screen on Web/Desktop displays only.
  * Receives an `onNavigate(id)` callback to trigger SPA navigation inside [body]. Automatically omitted on Mobile/Tablet.
- * @param navItemsPosition The horizontal alignment of the top navbar items ([NavItemsPosition.START], [NavItemsPosition.END], etc.).
+ * @param navItemsPosition The horizontal alignment of the top navbar items ([NavItemsPosition.START], [NavItemsPosition.MID],[NavItemsPosition.END], etc.).
  * @param body The dynamic SPA content slot. Receives the currently active [KitNavItem] and recomposes automatically when switched.
  */
 @Composable
@@ -60,32 +64,83 @@ fun KitNavScaffold(
             ?: KitNavItem(id = targetId, title = targetId)
         currentItem = matchedItem
     }
-
     BoxWithConstraints(modifier = modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
             // 1. TOP BAR: Web Header + NavItems | Mobile/Tab Toolbar
             if (isWeb) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(64.dp)
-                        .padding(horizontal = 24.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    if (header != null) {
-                        Box(contentAlignment = Alignment.CenterStart) {
-                            header()
+                when (navItemsPosition) {
+                    NavItemsPosition.START -> {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(64.dp)
+                                .padding(horizontal = 24.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            if (header != null) {
+                                Box(contentAlignment = Alignment.CenterStart) {
+                                    header()
+                                }
+                                Spacer(modifier = Modifier.width(24.dp))
+                            }
+                            DesktopTopBarNavigator(
+                                navItems = navItems,
+                                activeItem = currentItem,
+                                onItemSelected = { currentItem = it },
+                                position = navItemsPosition
+                            )
+                            Spacer(modifier = Modifier.weight(1f))
                         }
-                    } else {
-                        Spacer(modifier = Modifier.width(1.dp))
                     }
-                    DesktopTopBarNavigator(
-                        navItems = navItems,
-                        activeItem = currentItem,
-                        onItemSelected = { currentItem = it },
-                        position = navItemsPosition
-                    )
+                    NavItemsPosition.MID -> {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(64.dp)
+                                .padding(horizontal = 24.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            if (header != null) {
+                                Box(
+                                    modifier = Modifier.align(Alignment.CenterStart),
+                                    contentAlignment = Alignment.CenterStart
+                                ) {
+                                    header()
+                                }
+                            }
+                            DesktopTopBarNavigator(
+                                navItems = navItems,
+                                activeItem = currentItem,
+                                onItemSelected = { currentItem = it },
+                                position = navItemsPosition,
+                                modifier = Modifier.align(Alignment.Center)
+                            )
+                        }
+                    }
+                    NavItemsPosition.END -> {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(64.dp)
+                                .padding(horizontal = 24.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            if (header != null) {
+                                Box(contentAlignment = Alignment.CenterStart) {
+                                    header()
+                                }
+                            } else {
+                                Spacer(modifier = Modifier.width(1.dp))
+                            }
+                            DesktopTopBarNavigator(
+                                navItems = navItems,
+                                activeItem = currentItem,
+                                onItemSelected = { currentItem = it },
+                                position = navItemsPosition
+                            )
+                        }
+                    }
                 }
                 HorizontalDivider()
             } else if ((isMobile || isTab) && toolbar != null) {
