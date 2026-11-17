@@ -46,7 +46,6 @@ fun main() = application {
     Window(
         onCloseRequest = ::exitApplication,
         title = "KitFlow Live Test",
-        // Start at 1024.dp so Web/Desktop mode + Footer are visible immediately; drag narrower to test Mobile mode
         state = rememberWindowState(width = 1024.dp, height = 760.dp)
     ) {
         val navItems = remember {
@@ -97,7 +96,6 @@ fun main() = application {
                             Text(text = "© 2026 KitFlow Multiplatform", fontSize = 12.sp)
 
                             Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                                // 1. Navigates to an existing top-bar tab & highlights "Settings"
                                 Text(
                                     text = "Settings",
                                     fontSize = 12.sp,
@@ -112,7 +110,6 @@ fun main() = application {
                                     color = Color(0xFF2563EB),
                                     modifier = Modifier.clickable { onNavigate("profile") }
                                 )
-                                // 2. Navigates to a footer-only SPA route inside body
                                 Text(
                                     text = "Privacy Policy",
                                     fontSize = 12.sp,
@@ -120,7 +117,6 @@ fun main() = application {
                                     color = Color(0xFF2563EB),
                                     modifier = Modifier.clickable { onNavigate("privacy") }
                                 )
-                                // 3. Navigates to another footer-only SPA route inside body
                                 Text(
                                     text = "Terms",
                                     fontSize = 12.sp,
