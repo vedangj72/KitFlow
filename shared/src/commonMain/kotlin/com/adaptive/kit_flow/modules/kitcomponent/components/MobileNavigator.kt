@@ -21,7 +21,11 @@ import com.adaptive.kit_flow.modules.kitcomponent.utils.KitNavItem
 
 /**
  * Bottom bar navigator for Mobile layouts (Android & iOS).
- * State is hoisted to the caller via [activeItem] and [onItemSelected].
+ *
+ * @param navItems Primary list of navigation items.
+ * @param activeItem The currently active navigation item.
+ * @param onItemSelected Callback triggered when a navigation item is selected.
+ * @param modifier Modifier applied to the bottom bar row.
  */
 @Composable
 internal fun MobileBottomBarNavigator(

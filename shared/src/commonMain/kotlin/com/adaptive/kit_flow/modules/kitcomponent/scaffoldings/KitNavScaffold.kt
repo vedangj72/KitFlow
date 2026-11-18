@@ -19,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.adaptive.kit_flow.modules.kitcomponent.utils.KitNavItem
 import com.adaptive.kit_flow.modules.kitcomponent.components.DesktopTopBarNavigator
@@ -37,12 +38,7 @@ import com.adaptive.kit_flow.modules.kitcomponent.utils.HeaderPosition
  *   a dynamic [body], and an optional [footer] with SPA navigation support.
  * - **Mobile / Tablet Displays:** Renders an optional top [toolbar], the [body],
  *   and a sticky bottom navigation bar for [navItems] (ignoring [footer]).
- * @param navItems The list of [KitNavItem] destinations displayed in the Web top navbar or Mobile bottom bar. Must not be empty.
- * @param modifier The [Modifier] applied to the root scaffold container.
- * @param header Optional composable placed on the leading side of the Web/Desktop top bar (typically a brand logo or title).
- * @param toolbar Optional composable rendered as the top app bar on Mobile/Tablet displays.
- * @param footer Optional composable pinned at the bottom of the screen on Web/Desktop displays only.
- * Receives an `onNavigate(id)` callback to trigger SPA navigation inside [body]. Automatically omitted on Mobile/Tablet.
+ *
  * @param navItems The list of [KitNavItem] destinations displayed in the Web top navbar or Mobile bottom bar. Must not be empty.
  * @param modifier The [Modifier] applied to the root scaffold container.
  * @param header Optional composable placed on the leading side of the Web/Desktop top bar (typically a brand logo or title).
@@ -51,10 +47,12 @@ import com.adaptive.kit_flow.modules.kitcomponent.utils.HeaderPosition
  * Receives an `onNavigate(id)` callback to trigger SPA navigation inside [body]. Automatically omitted on Mobile/Tablet.
  * @param navItemsPosition The horizontal alignment of the top navbar items ([NavItemsPosition.START], [NavItemsPosition.MID],[NavItemsPosition.END], etc.).
  * @param headerPosition Header icon/logo positioning mode:
- * - [HeaderPosition.START] (or [HeaderPosition.START_FIXED]): Fixed to the start (left edge) of the top bar container.
- * - [HeaderPosition.FIXED] (aka attach with list / [HeaderPosition.ATTACH] / [HeaderPosition.ATTACHED]): Attached directly adjacent to [navItems], traveling wherever the navigation list is placed.
+ * - [HeaderPosition.START]: Fixed to the start (left edge) of the top bar container.
+ * - [HeaderPosition.FIXED]: Attached directly adjacent to [navItems], traveling wherever the navigation list is placed.
+ * @param navSpacing The horizontal spacing in [Dp] between navigation items in the top bar.
+ * Tip: Pass an adaptive value using `Adaptive.value(sm = 12.dp, md = 16.dp, lg = 20.dp, tab = 24.dp, desktop = 28.dp)`
+ * so the navigation items spacing automatically adjusts dynamically across different screen sizes.
  * @param extraNavItems Optional secondary list of [KitNavItem] destinations placed on the trailing side of the top bar (e.g. Profile, Settings, Docs).
- * @param extraItem Optional composable rendered on the trailing side of the top bar alongside or after [extraNavItems] (e.g. search bar, CTA button).
  * @param body The dynamic SPA content slot. Receives the currently active [KitNavItem] and recomposes automatically when switched.
  */
 @Composable
@@ -66,8 +64,8 @@ fun KitNavScaffold(
     footer: (@Composable (onNavigate: (id: String) -> Unit) -> Unit)? = null,
     navItemsPosition: NavItemsPosition = NavItemsPosition.END,
     headerPosition: HeaderPosition = HeaderPosition.START,
+    navSpacing: Dp = 20.dp,
     extraNavItems: List<KitNavItem> = emptyList(),
-    extraItem: (@Composable () -> Unit)? = null,
     body: @Composable (currentItem: KitNavItem) -> Unit,
 ) {
     require(navItems.isNotEmpty()) { "navItems must not be empty" }
@@ -80,30 +78,20 @@ fun KitNavScaffold(
     }
 
     val trailingContent: @Composable () -> Unit = {
-        if (extraNavItems.isNotEmpty() || extraItem != null) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                if (extraNavItems.isNotEmpty()) {
-                    DesktopTopBarNavigator(
-                        navItems = extraNavItems,
-                        activeItem = currentItem,
-                        onItemSelected = { currentItem = it },
-                        position = NavItemsPosition.END
-                    )
-                }
-                if (extraItem != null) {
-                    extraItem()
-                }
-            }
+        if (extraNavItems.isNotEmpty()) {
+            DesktopTopBarNavigator(
+                navItems = extraNavItems,
+                activeItem = currentItem,
+                onItemSelected = { currentItem = it },
+                position = NavItemsPosition.END,
+                navSpacing = navSpacing
+            )
         }
     }
-    val hasTrailing = extraNavItems.isNotEmpty() || extraItem != null
+    val hasTrailing = extraNavItems.isNotEmpty()
 
     BoxWithConstraints(modifier = modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
-            // 1. TOP BAR: Web Header + NavItems + ExtraNavItems/ExtraItem | Mobile/Tab Toolbar
             if (isWeb) {
                 Box(
                     modifier = Modifier
@@ -113,7 +101,6 @@ fun KitNavScaffold(
                 ) {
                     when (headerPosition) {
                         HeaderPosition.START -> {
-                            // Fixed header on the leading side
                             if (header != null && navItemsPosition != NavItemsPosition.START) {
                                 Box(
                                     modifier = Modifier.align(Alignment.CenterStart),
@@ -122,8 +109,6 @@ fun KitNavScaffold(
                                     header()
                                 }
                             }
-
-                            // Nav items based on navItemsPosition
                             when (navItemsPosition) {
                                 NavItemsPosition.START -> {
                                     Row(
@@ -138,7 +123,8 @@ fun KitNavScaffold(
                                             navItems = navItems,
                                             activeItem = currentItem,
                                             onItemSelected = { currentItem = it },
-                                            position = navItemsPosition
+                                            position = navItemsPosition,
+                                            navSpacing = navSpacing
                                         )
                                     }
                                 }
@@ -148,7 +134,8 @@ fun KitNavScaffold(
                                         activeItem = currentItem,
                                         onItemSelected = { currentItem = it },
                                         position = navItemsPosition,
-                                        modifier = Modifier.align(Alignment.Center)
+                                        modifier = Modifier.align(Alignment.Center),
+                                        navSpacing = navSpacing
                                     )
                                 }
                                 NavItemsPosition.END -> {
@@ -161,7 +148,8 @@ fun KitNavScaffold(
                                                 navItems = navItems,
                                                 activeItem = currentItem,
                                                 onItemSelected = { currentItem = it },
-                                                position = navItemsPosition
+                                                position = navItemsPosition,
+                                                navSpacing = navSpacing
                                             )
                                             Spacer(modifier = Modifier.width(16.dp))
                                             trailingContent()
@@ -172,13 +160,12 @@ fun KitNavScaffold(
                                             activeItem = currentItem,
                                             onItemSelected = { currentItem = it },
                                             position = navItemsPosition,
-                                            modifier = Modifier.align(Alignment.CenterEnd)
+                                            modifier = Modifier.align(Alignment.CenterEnd),
+                                            navSpacing = navSpacing
                                         )
                                     }
                                 }
                             }
-
-                            // Trailing content (extraNavItems and/or extraItem) for START & MID positions
                             if (hasTrailing && navItemsPosition != NavItemsPosition.END) {
                                 Box(
                                     modifier = Modifier.align(Alignment.CenterEnd),
@@ -188,9 +175,7 @@ fun KitNavScaffold(
                                 }
                             }
                         }
-
                         HeaderPosition.FIXED -> {
-                            // Header attached directly adjacent to nav items
                             val navGroup: @Composable () -> Unit = {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
                                     if (header != null) {
@@ -201,7 +186,8 @@ fun KitNavScaffold(
                                         navItems = navItems,
                                         activeItem = currentItem,
                                         onItemSelected = { currentItem = it },
-                                        position = navItemsPosition
+                                        position = navItemsPosition,
+                                        navSpacing = navSpacing
                                     )
                                 }
                             }
@@ -243,8 +229,6 @@ fun KitNavScaffold(
                                     }
                                 }
                             }
-
-                            // Trailing content for START & MID positions
                             if (hasTrailing && navItemsPosition != NavItemsPosition.END) {
                                 Box(
                                     modifier = Modifier.align(Alignment.CenterEnd),
@@ -279,7 +263,6 @@ fun KitNavScaffold(
                 HorizontalDivider()
             }
 
-            // 2. SPA BODY: Updates automatically when any tab or footer link is selected
             Box(
                 modifier = Modifier
                     .weight(1f)
@@ -288,7 +271,6 @@ fun KitNavScaffold(
                 body(currentItem)
             }
 
-            // 3. BOTTOM BAR: Web Footer (with SPA trigger) | Mobile/Tab Bottom Navigation
             if (isWeb && footer != null) {
                 HorizontalDivider()
                 Box(modifier = Modifier.fillMaxWidth()) {

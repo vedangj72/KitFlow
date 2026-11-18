@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.adaptive.kit_flow.modules.kitcomponent.utils.KitNavItem
@@ -20,7 +21,15 @@ import com.adaptive.kit_flow.modules.kitcomponent.utils.NavItemsPosition
 
 /**
  * Top bar navigator for Web and Desktop layouts.
- * State is hoisted to the caller via [activeItem] and [onItemSelected].
+ *
+ * @param navItems Primary list of navigation items.
+ * @param activeItem The currently active navigation item.
+ * @param onItemSelected Callback triggered when a navigation item is selected.
+ * @param modifier Modifier applied to the navigator row.
+ * @param position Horizontal alignment of navigation items ([NavItemsPosition.START], [NavItemsPosition.MID], or [NavItemsPosition.END]).
+ * @param navSpacing The horizontal spacing in [Dp] between navigation items.
+ * Tip: Use an adaptive value such as `Adaptive.value(sm = 12.dp, md = 16.dp, lg = 20.dp, tab = 24.dp, desktop = 28.dp)`
+ * to adapt spacing across different screen breakpoints.
  */
 @Composable
 internal fun DesktopTopBarNavigator(
@@ -28,12 +37,13 @@ internal fun DesktopTopBarNavigator(
     activeItem: KitNavItem,
     onItemSelected: (KitNavItem) -> Unit,
     modifier: Modifier = Modifier,
-    position: NavItemsPosition = NavItemsPosition.END
+    position: NavItemsPosition = NavItemsPosition.END,
+    navSpacing: Dp = 20.dp,
 ) {
     val arrangement = when (position) {
-        NavItemsPosition.START -> Arrangement.spacedBy(20.dp, Alignment.Start)
-        NavItemsPosition.MID -> Arrangement.spacedBy(20.dp, Alignment.CenterHorizontally)
-        NavItemsPosition.END -> Arrangement.spacedBy(20.dp, Alignment.End)
+        NavItemsPosition.START -> Arrangement.spacedBy(navSpacing, Alignment.Start)
+        NavItemsPosition.MID -> Arrangement.spacedBy(navSpacing, Alignment.CenterHorizontally)
+        NavItemsPosition.END -> Arrangement.spacedBy(navSpacing, Alignment.End)
     }
 
     Row(
