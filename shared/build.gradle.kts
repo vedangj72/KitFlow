@@ -13,7 +13,7 @@ plugins {
 }
 
 group = "io.github.vedangj72"
-version = "1.0.4"
+version = "1.1.0"
 
 kotlin {
     // iOS targets
@@ -110,35 +110,17 @@ mavenPublishing {
             developerConnection.set("scm:git:ssh://github.com/vedangj72/KitFlow.git")
             url.set("https://github.com/vedangj72/KitFlow")
         }
-        extensions.configure<SigningExtension> {
-            val signingKeyId =
-                findProperty("signingInMemoryKeyId") as String?
-
-            val signingKey =
-                findProperty("signingInMemoryKey") as String?
-
-            val signingPassword =
-                findProperty("signingInMemoryKeyPassword") as String?
-
-            useInMemoryPgpKeys(
-                signingKeyId,
-                signingKey,
-                signingPassword
-            )
-        }
     }
-
 }
 
 extensions.configure<SigningExtension> {
-    val signingKey =
-        findProperty("signingInMemoryKey") as String?
+    val signingKeyId = findProperty("signingInMemoryKeyId") as String?
+    val signingKey = findProperty("signingInMemoryKey") as String?
+    val signingPassword = findProperty("signingInMemoryKeyPassword") as String?
 
-    val signingPassword =
-        findProperty("signingInMemoryKeyPassword") as String?
-
-    useInMemoryPgpKeys(
-        signingKey,
-        signingPassword
-    )
+    if (!signingKeyId.isNullOrBlank()) {
+        useInMemoryPgpKeys(signingKeyId, signingKey, signingPassword)
+    } else if (signingKey != null) {
+        useInMemoryPgpKeys(signingKey, signingPassword)
+    }
 }

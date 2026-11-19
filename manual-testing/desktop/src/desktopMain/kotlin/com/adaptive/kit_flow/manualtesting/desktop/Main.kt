@@ -2,7 +2,6 @@ package com.adaptive.kit_flow.manualtesting.desktop
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,20 +14,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Card
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -40,23 +35,8 @@ import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import com.adaptive.kit_flow.Adaptive
 import com.adaptive.kit_flow.AdaptiveKitProvider
-import com.adaptive.kit_flow.accessibility.AdaptiveAccessibleLayout
-import com.adaptive.kit_flow.accessibility.LocalAdaptiveAccessibilityInfo
-import com.adaptive.kit_flow.accessibility.adaptiveSemantics
-import com.adaptive.kit_flow.accessibility.adaptiveTouchTarget
-import com.adaptive.kit_flow.layout.AdaptiveFlowGrid
 import com.adaptive.kit_flow.modules.kitcomponent.scaffoldings.KitDrawerScaffold
-import com.adaptive.kit_flow.modules.kitcomponent.scaffoldings.KitNavScaffold
-import com.adaptive.kit_flow.modules.kitcomponent.utils.ExtraItemsPosition
-import com.adaptive.kit_flow.modules.kitcomponent.utils.HeaderPosition
 import com.adaptive.kit_flow.modules.kitcomponent.utils.KitNavItem
-import com.adaptive.kit_flow.modules.kitcomponent.utils.NavItemsPosition
-import com.adaptive.kit_flow.rememberWindowInfo
-
-enum class ScaffoldDemoMode {
-    DRAWER,
-    TOP_BAR
-}
 
 fun main() = application {
     Window(
@@ -64,7 +44,6 @@ fun main() = application {
         title = "KitFlow Adaptive Navigation Manual Test",
         state = rememberWindowState(width = 1100.dp, height = 800.dp)
     ) {
-        // Primary Navigation Items
         val navItems = remember {
             listOf(
                 KitNavItem(id = "home", title = "Home"),
@@ -74,7 +53,6 @@ fun main() = application {
             )
         }
 
-        // Secondary / Extra Navigation Items (e.g. Profile, Help)
         val extraNavItems = remember {
             listOf(
                 KitNavItem(id = "profile", title = "Profile", badgeCount = 1),
@@ -82,534 +60,467 @@ fun main() = application {
             )
         }
 
-        // Controls state
-        var demoMode by remember { mutableStateOf(ScaffoldDemoMode.DRAWER) }
-        var isNonClosing by remember { mutableStateOf(false) }
-        var isMobileDrawer by remember { mutableStateOf(false) }
-        var extraItemsPos by remember { mutableStateOf(ExtraItemsPosition.TOOLBAR_END) }
-        var useCustomHamburger by remember { mutableStateOf(false) }
-        var topBarNavPosition by remember { mutableStateOf(NavItemsPosition.MID) }
-        var topBarHeaderPosition by remember { mutableStateOf(HeaderPosition.START) }
-
         MaterialTheme {
             AdaptiveKitProvider {
-                Column(modifier = Modifier.fillMaxSize()) {
-                    // Control Ribbon at the very top of testing window
-                    DemoControlBar(
-                        demoMode = demoMode,
-                        onModeChange = { demoMode = it },
-                        isNonClosing = isNonClosing,
-                        onNonClosingChange = { isNonClosing = it },
-                        isMobileDrawer = isMobileDrawer,
-                        onMobileDrawerChange = { isMobileDrawer = it },
-                        extraItemsPos = extraItemsPos,
-                        onExtraItemsPosChange = { extraItemsPos = it },
-                        useCustomHamburger = useCustomHamburger,
-                        onCustomHamburgerChange = { useCustomHamburger = it },
-                        navPosition = topBarNavPosition,
-                        onNavPositionChange = { topBarNavPosition = it },
-                        headerPos = topBarHeaderPosition,
-                        onHeaderPosChange = { topBarHeaderPosition = it }
-                    )
-
-                    Box(modifier = Modifier.weight(1f).fillMaxWidth()) {
-                        when (demoMode) {
-                            ScaffoldDemoMode.DRAWER -> {
-                                KitDrawerScaffold(
-                                    navItems = navItems,
-                                    extraNavItems = extraNavItems,
-                                    extraItemsPosition = extraItemsPos,
-                                    nonClosing = isNonClosing,
-                                    mobileDrawer = isMobileDrawer,
-                                    hamburgerIcon = if (useCustomHamburger) {
-                                        { toggleDrawer ->
-                                            IconButton(
-                                                onClick = toggleDrawer,
-                                                modifier = Modifier
-                                                    .size(36.dp)
-                                                    .background(Color(0xFFEEF2FF), CircleShape)
-                                            ) {
-                                                Text("☰", fontSize = 18.sp, color = Color(0xFF4F46E5), fontWeight = FontWeight.Bold)
-                                            }
-                                        }
-                                    } else null,
-                                    header = {
-                                        Row(verticalAlignment = Alignment.CenterVertically) {
-                                            Box(
-                                                modifier = Modifier
-                                                    .size(32.dp)
-                                                    .background(Color(0xFF4F46E5), RoundedCornerShape(8.dp)),
-                                                contentAlignment = Alignment.Center
-                                            ) {
-                                                Text("K", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 16.sp)
-                                            }
-                                            Spacer(modifier = Modifier.width(10.dp))
-                                            Column {
-                                                Text(
-                                                    text = "KitFlow",
-                                                    fontWeight = FontWeight.Bold,
-                                                    fontSize = 16.sp,
-                                                    color = Color(0xFF111827)
-                                                )
-                                                Text(
-                                                    text = "Drawer Navigator",
-                                                    fontSize = 11.sp,
-                                                    color = Color(0xFF6B7280)
-                                                )
-                                            }
-                                        }
-                                    },
-                                    toolbar = {
-                                        Text(
-                                            text = "KitFlow Dashboard",
-                                            fontWeight = FontWeight.SemiBold,
-                                            fontSize = 16.sp,
-                                            color = Color(0xFF111827)
-                                        )
-                                    },
-                                    drawerFooter = {
-                                        Row(
-                                            modifier = Modifier.fillMaxWidth(),
-                                            verticalAlignment = Alignment.CenterVertically
-                                        ) {
-                                            Box(
-                                                modifier = Modifier
-                                                    .size(32.dp)
-                                                    .background(Color(0xFFE5E7EB), CircleShape),
-                                                contentAlignment = Alignment.Center
-                                            ) {
-                                                Text("VJ", fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
-                                            }
-                                            Spacer(modifier = Modifier.width(10.dp))
-                                            Column {
-                                                Text(
-                                                    text = "Vedang Joshi",
-                                                    fontSize = 13.sp,
-                                                    fontWeight = FontWeight.Medium,
-                                                    color = Color(0xFF1F2937)
-                                                )
-                                                Text(
-                                                    text = "v1.0.4 • SDK Active",
-                                                    fontSize = 11.sp,
-                                                    color = Color(0xFF9CA3AF)
-                                                )
-                                            }
-                                        }
-                                    }
-                                ) { currentItem ->
-                                    DestinationBody(currentItem)
-                                }
+                KitDrawerScaffold(
+                    navItems = navItems,
+                    extraNavItems = extraNavItems,
+                    header = {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Box(
+                                modifier = Modifier
+                                    .size(32.dp)
+                                    .background(Color(0xFF4F46E5), RoundedCornerShape(8.dp)),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text("K", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 16.sp)
                             }
-
-                            ScaffoldDemoMode.TOP_BAR -> {
-                                KitNavScaffold(
-                                    navItems = navItems,
-                                    extraNavItems = extraNavItems,
-                                    navItemsPosition = topBarNavPosition,
-                                    headerPosition = topBarHeaderPosition,
-                                    navSpacing = Adaptive.value(
-                                        sm = 8.dp,
-                                        md = 12.dp,
-                                        lg = 16.dp,
-                                        tab = 20.dp,
-                                        desktop = 24.dp
-                                    ),
-                                    header = {
-                                        Row(verticalAlignment = Alignment.CenterVertically) {
-                                            Box(
-                                                modifier = Modifier
-                                                    .size(28.dp)
-                                                    .background(Color(0xFF4F46E5), RoundedCornerShape(6.dp)),
-                                                contentAlignment = Alignment.Center
-                                            ) {
-                                                Text("K", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 14.sp)
-                                            }
-                                            Spacer(modifier = Modifier.width(8.dp))
-                                            Text(
-                                                text = "KitFlow",
-                                                fontWeight = FontWeight.Bold,
-                                                fontSize = 18.sp
-                                            )
-                                        }
-                                    },
-                                    toolbar = {
-                                        Text(
-                                            text = "KitFlow TopBar",
-                                            fontWeight = FontWeight.Bold,
-                                            fontSize = 18.sp
-                                        )
-                                    },
-                                    footer = { onNavigate ->
-                                        Row(
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .background(Color(0xFFF3F4F6))
-                                                .padding(horizontal = 24.dp, vertical = 14.dp),
-                                            horizontalArrangement = Arrangement.SpaceBetween,
-                                            verticalAlignment = Alignment.CenterVertically
-                                        ) {
-                                            Text(text = "© 2026 KitFlow Multiplatform", fontSize = 12.sp)
-
-                                            Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                                                Text(
-                                                    text = "Help & Docs",
-                                                    fontSize = 12.sp,
-                                                    fontWeight = FontWeight.SemiBold,
-                                                    color = Color(0xFF2563EB),
-                                                    modifier = Modifier.clickable { onNavigate("help") }
-                                                )
-                                                Text(
-                                                    text = "Privacy Policy",
-                                                    fontSize = 12.sp,
-                                                    fontWeight = FontWeight.SemiBold,
-                                                    color = Color(0xFF2563EB),
-                                                    modifier = Modifier.clickable { onNavigate("privacy") }
-                                                )
-                                            }
-                                        }
-                                    }
-                                ) { currentItem ->
-                                    DestinationBody(currentItem)
-                                }
+                            Spacer(modifier = Modifier.width(10.dp))
+                            Column {
+                                Text(
+                                    text = "KitFlow",
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 16.sp,
+                                    color = Color(0xFF111827)
+                                )
+                                Text(
+                                    text = "Drawer Navigator",
+                                    fontSize = 11.sp,
+                                    color = Color(0xFF6B7280)
+                                )
+                            }
+                        }
+                    },
+                    toolbar = {
+                        Text(
+                            text = "KitFlow Dashboard",
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 16.sp,
+                            color = Color(0xFF111827)
+                        )
+                    },
+                    drawerFooter = {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .size(32.dp)
+                                    .background(Color(0xFFE5E7EB), CircleShape),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text("VJ", fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
+                            }
+                            Spacer(modifier = Modifier.width(10.dp))
+                            Column {
+                                Text(
+                                    text = "Vedang Joshi",
+                                    fontSize = 13.sp,
+                                    fontWeight = FontWeight.Medium,
+                                    color = Color(0xFF1F2937)
+                                )
+                                Text(
+                                    text = "v1.1.0 • SDK Active",
+                                    fontSize = 11.sp,
+                                    color = Color(0xFF9CA3AF)
+                                )
                             }
                         }
                     }
+                ) { currentItem ->
+                    DestinationBody(currentItem)
                 }
             }
         }
-    }
-}
-
-@Composable
-private fun DemoControlBar(
-    demoMode: ScaffoldDemoMode,
-    onModeChange: (ScaffoldDemoMode) -> Unit,
-    isNonClosing: Boolean,
-    onNonClosingChange: (Boolean) -> Unit,
-    isMobileDrawer: Boolean,
-    onMobileDrawerChange: (Boolean) -> Unit,
-    extraItemsPos: ExtraItemsPosition,
-    onExtraItemsPosChange: (ExtraItemsPosition) -> Unit,
-    useCustomHamburger: Boolean,
-    onCustomHamburgerChange: (Boolean) -> Unit,
-    navPosition: NavItemsPosition,
-    onNavPositionChange: (NavItemsPosition) -> Unit,
-    headerPos: HeaderPosition,
-    onHeaderPosChange: (HeaderPosition) -> Unit,
-) {
-    Surface(
-        modifier = Modifier.fillMaxWidth(),
-        color = Color(0xFF1E293B),
-        shadowElevation = 4.dp
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 10.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            Text(
-                text = "Mode:",
-                color = Color(0xFF94A3B8),
-                fontSize = 12.sp,
-                fontWeight = FontWeight.SemiBold
-            )
-
-            // Switcher: Drawer vs TopBar
-            PillButton(
-                text = "KitDrawerScaffold (Drawer)",
-                selected = demoMode == ScaffoldDemoMode.DRAWER,
-                onClick = { onModeChange(ScaffoldDemoMode.DRAWER) }
-            )
-            PillButton(
-                text = "KitNavScaffold (Top Bar)",
-                selected = demoMode == ScaffoldDemoMode.TOP_BAR,
-                onClick = { onModeChange(ScaffoldDemoMode.TOP_BAR) }
-            )
-
-            Box(
-                modifier = Modifier
-                    .height(20.dp)
-                    .width(1.dp)
-                    .background(Color(0xFF475569))
-            )
-
-            // Mobile Navigation Toggle
-            PillButton(
-                text = if (isMobileDrawer) "Mobile: Drawer Enabled" else "Mobile: Bottom Bar",
-                selected = isMobileDrawer,
-                onClick = { onMobileDrawerChange(!isMobileDrawer) }
-            )
-
-            Box(
-                modifier = Modifier
-                    .height(20.dp)
-                    .width(1.dp)
-                    .background(Color(0xFF475569))
-            )
-
-            // Contextual controls depending on mode
-            if (demoMode == ScaffoldDemoMode.DRAWER) {
-                PillButton(
-                    text = if (isNonClosing) "nonClosing: true (Permanent)" else "nonClosing: false (Collapsible)",
-                    selected = isNonClosing,
-                    onClick = { onNonClosingChange(!isNonClosing) }
-                )
-                PillButton(
-                    text = if (extraItemsPos == ExtraItemsPosition.TOOLBAR_END) "Extra Items: Toolbar End" else "Extra Items: Inside Drawer",
-                    selected = extraItemsPos == ExtraItemsPosition.TOOLBAR_END,
-                    onClick = {
-                        onExtraItemsPosChange(
-                            if (extraItemsPos == ExtraItemsPosition.TOOLBAR_END) ExtraItemsPosition.INSIDE_DRAWER
-                            else ExtraItemsPosition.TOOLBAR_END
-                        )
-                    }
-                )
-                PillButton(
-                    text = if (useCustomHamburger) "Custom Hamburger" else "Default 3-Bar Icon",
-                    selected = useCustomHamburger,
-                    onClick = { onCustomHamburgerChange(!useCustomHamburger) }
-                )
-            } else {
-                Text(
-                    text = "Items Pos:",
-                    color = Color(0xFF94A3B8),
-                    fontSize = 12.sp
-                )
-                listOf(NavItemsPosition.START, NavItemsPosition.MID, NavItemsPosition.END).forEach { pos ->
-                    PillButton(
-                        text = pos.name,
-                        selected = navPosition == pos,
-                        onClick = { onNavPositionChange(pos) }
-                    )
-                }
-                Text(
-                    text = "Header:",
-                    color = Color(0xFF94A3B8),
-                    fontSize = 12.sp
-                )
-                listOf(HeaderPosition.START, HeaderPosition.FIXED).forEach { hp ->
-                    PillButton(
-                        text = if (hp == HeaderPosition.START) "START (Fixed)" else "FIXED (Attached)",
-                        selected = headerPos == hp,
-                        onClick = { onHeaderPosChange(hp) }
-                    )
-                }
-            }
-        }
-    }
-}
-
-@Composable
-private fun PillButton(
-    text: String,
-    selected: Boolean,
-    onClick: () -> Unit
-) {
-    Box(
-        modifier = Modifier
-            .background(
-                if (selected) Color(0xFF4F46E5) else Color(0xFF334155),
-                RoundedCornerShape(6.dp)
-            )
-            .border(
-                1.dp,
-                if (selected) Color(0xFF818CF8) else Color.Transparent,
-                RoundedCornerShape(6.dp)
-            )
-            .clickable { onClick() }
-            .padding(horizontal = 10.dp, vertical = 6.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = text,
-            color = if (selected) Color.White else Color(0xFFE2E8F0),
-            fontSize = 12.sp,
-            fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal
-        )
     }
 }
 
 @Composable
 private fun DestinationBody(currentItem: KitNavItem) {
     when (currentItem.id) {
-        "home" -> DemoScreen()
-        "explore" -> DummyScreen(title = "Explore Trending Destinations")
-        "profile" -> DummyScreen(title = "User Profile & Account Settings")
-        "settings" -> DummyScreen(title = "KitFlow Configuration & Preferences")
-        "help" -> DummyScreen(title = "Documentation & Help Center")
-        "privacy" -> DummyScreen(title = "Privacy Policy (SPA Destination)")
-        else -> DummyScreen(title = currentItem.title ?: "Destination ${currentItem.id}")
+        "home" -> HomeScreen()
+        "explore" -> ExploreScreen()
+        "profile" -> ProfileScreen()
+        "settings" -> SettingsScreen()
+        "help" -> HelpScreen()
+        else -> GenericScreen(currentItem.title ?: currentItem.id ?: "Destination")
     }
 }
 
 @Composable
-private fun DummyScreen(title: String) {
-    LazyColumn(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        item {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.headlineMedium,
-                fontWeight = FontWeight.Bold
-            )
-        }
-        items(20) { index ->
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp)
-            ) {
-                Text(text = "$title — Sample Card #${index + 1}")
-            }
-        }
-    }
-}
-
-@Composable
-private fun DemoScreen() {
-    val info = rememberWindowInfo()
-    val accessibilityInfo = LocalAdaptiveAccessibilityInfo.current
+private fun HomeScreen() {
+    val scrollState = rememberScrollState()
     val screenPadding = Adaptive.value(
-        sm = 12.dp,
-        md = 16.dp,
-        lg = 20.dp,
-        tab = 32.dp,
+        sm = 16.dp,
+        md = 24.dp,
+        lg = 32.dp,
+        tab = 40.dp,
         desktop = 48.dp
     )
-    val titleSize = Adaptive.value(
-        sm = 20.sp,
-        md = 22.sp,
-        lg = 24.sp,
-        tab = 28.sp,
-        desktop = 32.sp
-    )
-    val cardRadius = Adaptive.value(
-        sm = 10.dp,
-        md = 14.dp,
-        lg = 18.dp,
-        tab = 22.dp,
-        desktop = 26.dp
-    )
 
-    Surface(modifier = Modifier.fillMaxSize()) {
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = Color(0xFFF9FAFB)
+    ) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState())
+                .verticalScroll(scrollState)
                 .padding(screenPadding),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
-            Text(
-                text = "KitFlow live test",
-                fontSize = titleSize
-            )
+            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                Text(
+                    text = "KitFlow Adaptive Dashboard",
+                    fontSize = 28.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color(0xFF111827)
+                )
+                Text(
+                    text = "Responsive navigation & layout engine for Compose Multiplatform",
+                    fontSize = 14.sp,
+                    color = Color(0xFF6B7280)
+                )
+            }
 
-            InfoRow("widthDp", info.widthDp.toString())
-            InfoRow("heightDp", info.heightDp.toString())
-            InfoRow("shortestSideDp", info.shortestSideDp.toString())
-            InfoRow("screenClass", info.screenClass.name)
-            InfoRow("layoutClass", info.layoutClass.name)
-            InfoRow("orientation", info.orientation.name)
-            InfoRow("adaptive padding", screenPadding.toString())
-            InfoRow("fontScale", accessibilityInfo.fontScale.toString())
-            InfoRow("fontScaleClass", accessibilityInfo.fontScaleClass.name)
-            InfoRow("minimumTouchTarget", accessibilityInfo.minimumTouchTarget.toString())
-            InfoRow("reducedMotion", accessibilityInfo.reducedMotion.toString())
-            InfoRow("highContrast", accessibilityInfo.highContrast.toString())
-
-            AdaptiveFlowGrid(
-                minColumnWidth = 160.dp,
-                maxColumns = 3
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                repeat(4) { index ->
-                    DemoPanel(index + 1)
-                }
+                MetricCard(
+                    title = "Supported Targets",
+                    value = "4 Platforms",
+                    subtitle = "Desktop • Web • Android • iOS",
+                    badgeColor = Color(0xFF4F46E5),
+                    modifier = Modifier.weight(1f)
+                )
+                MetricCard(
+                    title = "Active Navigation",
+                    value = "KitDrawerScaffold",
+                    subtitle = "Modal drawer + smooth scrim",
+                    badgeColor = Color(0xFF059669),
+                    modifier = Modifier.weight(1f)
+                )
+                MetricCard(
+                    title = "SDK Release",
+                    value = "v1.1.0",
+                    subtitle = "Production ready",
+                    badgeColor = Color(0xFFD97706),
+                    modifier = Modifier.weight(1f)
+                )
             }
 
-            Card(shape = RoundedCornerShape(cardRadius)) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(120.dp)
-                        .background(Color(0xFFE6F3FF))
-                        .padding(16.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text("Resize the window to test KitFlow")
-                }
+            Text(
+                text = "Key Capabilities",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.SemiBold,
+                color = Color(0xFF1F2937)
+            )
+
+            Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                FeatureRow(
+                    tag = "Drawer SPA",
+                    title = "Fluid Slide-Over Navigation",
+                    description = "Smooth animated drawer with scrim backdrop on wide screens. Automatically adapts to a bottom bar on mobile screens.",
+                    tagColor = Color(0xFF4F46E5)
+                )
+                FeatureRow(
+                    tag = "Adaptive",
+                    title = "Breakpoint-Aware Layouts",
+                    description = "Responsive values for spacing, typography, and grids that adjust dynamically without boilerplate.",
+                    tagColor = Color(0xFF0284C7)
+                )
+                FeatureRow(
+                    tag = "Multiplatform",
+                    title = "Unified API Across All Targets",
+                    description = "One codebase powers JVM Desktop, Wasm/JS Web, Android, and iOS with full Compose Multiplatform fidelity.",
+                    tagColor = Color(0xFF059669)
+                )
             }
-
-            Adaptive.onOrientationChange(
-                portrait = {
-                    Text("Portrait branch is active")
-                },
-                landscape = {
-                    Text("Landscape branch is active")
-                },
-                square = {
-                    Text("Square branch is active")
-                }
-            )
-
-            AdaptiveAccessibleLayout(
-                normal = {
-                    Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                        Text("Normal font layout")
-                        AccessibleActionBox("Open")
-                    }
-                },
-                largeText = {
-                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                        Text("Large text-safe layout")
-                        AccessibleActionBox("Open")
-                    }
-                }
-            )
         }
     }
 }
 
 @Composable
-private fun DemoPanel(index: Int) {
-    Box(
-        modifier = Modifier
-            .background(Color(0xFFF2EDFF), RoundedCornerShape(12.dp))
-            .padding(16.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Text("Adaptive panel $index")
-    }
-}
-
-@Composable
-private fun AccessibleActionBox(label: String) {
-    Box(
-        modifier = Modifier
-            .adaptiveTouchTarget()
-            .background(Color(0xFFDEF7E5), RoundedCornerShape(12.dp))
-            .adaptiveSemantics(label = "$label demo action")
-            .clickable { }
-            .padding(horizontal = 14.dp, vertical = 8.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(label)
-    }
-}
-
-@Composable
-private fun InfoRow(
-    label: String,
-    value: String
+private fun MetricCard(
+    title: String,
+    value: String,
+    subtitle: String,
+    badgeColor: Color,
+    modifier: Modifier = Modifier
 ) {
-    Row {
-        Text(label)
-        Spacer(Modifier.width(12.dp))
-        Text(value)
+    Box(
+        modifier = modifier
+            .background(Color.White, RoundedCornerShape(12.dp))
+            .border(1.dp, Color(0xFFE5E7EB), RoundedCornerShape(12.dp))
+            .padding(20.dp)
+    ) {
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(text = title, fontSize = 12.sp, fontWeight = FontWeight.Medium, color = Color(0xFF6B7280))
+            Text(text = value, fontSize = 22.sp, fontWeight = FontWeight.Bold, color = badgeColor)
+            Text(text = subtitle, fontSize = 11.sp, color = Color(0xFF9CA3AF))
+        }
+    }
+}
+
+@Composable
+private fun FeatureRow(
+    tag: String,
+    title: String,
+    description: String,
+    tagColor: Color
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.White, RoundedCornerShape(12.dp))
+            .border(1.dp, Color(0xFFE5E7EB), RoundedCornerShape(12.dp))
+            .padding(20.dp)
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                modifier = Modifier
+                    .background(tagColor.copy(alpha = 0.1f), RoundedCornerShape(8.dp))
+                    .padding(horizontal = 10.dp, vertical = 6.dp)
+            ) {
+                Text(
+                    text = tag,
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = tagColor
+                )
+            }
+            Spacer(modifier = Modifier.width(16.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = title,
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = Color(0xFF111827)
+                )
+                Spacer(modifier = Modifier.height(2.dp))
+                Text(
+                    text = description,
+                    fontSize = 13.sp,
+                    color = Color(0xFF6B7280)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun ExploreScreen() {
+    val screenPadding = Adaptive.value(
+        sm = 16.dp,
+        md = 24.dp,
+        lg = 32.dp,
+        tab = 40.dp,
+        desktop = 48.dp
+    )
+
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = Color(0xFFF9FAFB)
+    ) {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(screenPadding),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            item {
+                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                    Text(
+                        text = "Explore KitFlow Components",
+                        fontSize = 28.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color(0xFF111827)
+                    )
+                    Text(
+                        text = "Production-ready scaffolding, navigation, and adaptive layouts",
+                        fontSize = 14.sp,
+                        color = Color(0xFF6B7280)
+                    )
+                }
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+
+            val components = listOf(
+                Triple("KitDrawerScaffold", "Scaffolding", "Collapsible slide-over drawer with scrim backdrop and sticky toolbar."),
+                Triple("KitNavScaffold", "Scaffolding", "Top navigation bar scaffold with adaptive spacing and dynamic header alignment."),
+                Triple("AdaptiveFlowGrid", "Layout", "Wrapping grid layout with automatic column count calculation."),
+                Triple("AdaptiveAccessibleLayout", "Accessibility", "Layout branching for normal and high font scale accessibility."),
+                Triple("LocalAdaptiveAccessibilityInfo", "Accessibility", "CompositionLocal exposing system accessibility preferences.")
+            )
+
+            items(components) { (name, category, desc) ->
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color.White, RoundedCornerShape(12.dp))
+                        .border(1.dp, Color(0xFFE5E7EB), RoundedCornerShape(12.dp))
+                        .padding(20.dp)
+                ) {
+                    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(text = name, fontSize = 16.sp, fontWeight = FontWeight.Bold, color = Color(0xFF111827))
+                            Box(
+                                modifier = Modifier
+                                    .background(Color(0xFFEEF2FF), RoundedCornerShape(6.dp))
+                                    .padding(horizontal = 8.dp, vertical = 4.dp)
+                            ) {
+                                Text(text = category, fontSize = 11.sp, fontWeight = FontWeight.SemiBold, color = Color(0xFF4F46E5))
+                            }
+                        }
+                        Text(text = desc, fontSize = 13.sp, color = Color(0xFF6B7280))
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ProfileScreen() {
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = Color(0xFFF9FAFB)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(48.dp),
+            verticalArrangement = Arrangement.spacedBy(20.dp)
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.White, RoundedCornerShape(16.dp))
+                    .border(1.dp, Color(0xFFE5E7EB), RoundedCornerShape(16.dp))
+                    .padding(28.dp)
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Box(
+                        modifier = Modifier
+                            .size(64.dp)
+                            .background(Color(0xFF4F46E5), CircleShape),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text("VJ", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 24.sp)
+                    }
+                    Spacer(modifier = Modifier.width(20.dp))
+                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                        Text("Vedang Joshi", fontSize = 22.sp, fontWeight = FontWeight.Bold, color = Color(0xFF111827))
+                        Text("Author & Maintainer • KitFlow", fontSize = 13.sp, color = Color(0xFF6B7280))
+                        Text("v1.1.0 • Multiplatform Navigation", fontSize = 12.sp, color = Color(0xFF059669), fontWeight = FontWeight.Medium)
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun SettingsScreen() {
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = Color(0xFFF9FAFB)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(48.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Text("Settings", fontSize = 28.sp, fontWeight = FontWeight.Bold, color = Color(0xFF111827))
+
+            listOf(
+                "Navigation Scaffold" to "KitDrawerScaffold (Slide-over)",
+                "Animation Duration" to "300ms Horizontally",
+                "Scrim Backdrop" to "Enabled (35% Black)",
+                "Target Framework" to "Compose Multiplatform 1.7.x",
+                "SDK Version" to "1.1.0"
+            ).forEach { (label, value) ->
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color.White, RoundedCornerShape(12.dp))
+                        .border(1.dp, Color(0xFFE5E7EB), RoundedCornerShape(12.dp))
+                        .padding(horizontal = 20.dp, vertical = 16.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(text = label, fontSize = 14.sp, fontWeight = FontWeight.Medium, color = Color(0xFF374151))
+                        Text(text = value, fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = Color(0xFF4F46E5))
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun HelpScreen() {
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = Color(0xFFF9FAFB)
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(48.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Text("Help & Documentation", fontSize = 28.sp, fontWeight = FontWeight.Bold, color = Color(0xFF111827))
+            Text("Resources for integrating KitFlow into Compose Multiplatform apps.", fontSize = 14.sp, color = Color(0xFF6B7280))
+
+            listOf(
+                "Quick Start" to "Add implementation(project(\":shared\")) or Maven coordinate com.adaptive:kit-flow:1.1.0.",
+                "Using KitDrawerScaffold" to "Wrap your destinations with KitDrawerScaffold to get automatic drawer & bottom bar adaptation.",
+                "Customizing Headers & Footers" to "Pass your own composables into header, toolbar, and drawerFooter slots."
+            ).forEach { (title, detail) ->
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color.White, RoundedCornerShape(12.dp))
+                        .border(1.dp, Color(0xFFE5E7EB), RoundedCornerShape(12.dp))
+                        .padding(20.dp)
+                ) {
+                    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                        Text(text = title, fontSize = 15.sp, fontWeight = FontWeight.Bold, color = Color(0xFF111827))
+                        Text(text = detail, fontSize = 13.sp, color = Color(0xFF6B7280))
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun GenericScreen(title: String = "Destination") {
+    Surface(
+        modifier = Modifier.fillMaxSize(),
+        color = Color(0xFFF9FAFB)
+    ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(48.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(text = title, fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Color(0xFF374151))
+        }
     }
 }
