@@ -18,19 +18,28 @@ KitFlow helps you create responsive layouts across Android, iOS, Desktop and Web
 ## Index
 
 1. [Installation](#installation)
-1. [Why KitFlow](#why-kitflow)
-1. [Adaptive.value()](#adaptivevalue)
-1. [Orientation Handling](#orientation-handling)
-1. [Window Info](#window-info)
-1. [Adaptive Layout Decisions](#adaptive-layout-decisions)
-1. [AdaptiveFlowGrid](#adaptiveflowgrid)
-1. [Supported Platforms](#supported-platforms)
+2. [Wrap Your App](#wrap-your-app)
+3. [Why KitFlow](#why-kitflow)
+4. [Features Overview](#features)
+5. [Adaptive.value()](#adaptivevalue)
+6. [Orientation Handling](#orientation-handling)
+7. [Window Info](#window-info)
+8. [Adaptive Layout Decisions](#adaptive-layout-decisions)
+9. [AdaptiveFlowGrid](#adaptiveflowgrid)
+10. [Component 1: KitDrawerScaffold & KitDrawerNavigator](#component-1-kitdrawerscaffold--kitdrawernavigator)
+11. [Component 2: KitNavScaffold](#component-2-kitnavscaffold)
+12. [Accessibility & Inclusive UI](#accessibility)
+13. [Hosted Video Demonstrations](#hosted-video-demonstrations)
+14. [Supported Platforms](#supported-platforms)
+15. [Compose Layout Notes](#compose-layout-notes)
+16. [Official Notes](#official-notes)
+17. [Design Principle & Future Vision](#design-principle)
 
 ---
 
 ## KitFlow Mark
 
-<img src="docs/assets/icons/kitflow_icon.png" alt="KitFlow logo" width="160" height="160" />
+<img src="shared/src/commonMain/composeResources/drawable/kitflow_icon.png" alt="KitFlow logo" width="160" height="160" style="border-radius: 24px;" />
 
 KitFlow is built around a clean, reusable adaptive layer. The mark reflects that idea: a shared core with responsive motion and layout around it.
 
@@ -38,7 +47,7 @@ KitFlow is built around a clean, reusable adaptive layer. The mark reflects that
 
 ## Installation
 
-Add Maven Central:
+Add Maven Central in your root `settings.gradle.kts` or `build.gradle.kts`:
 
 ```kotlin
 repositories {
@@ -46,24 +55,27 @@ repositories {
 }
 ```
 
-Add the SDK:
+Add the KitFlow dependency in your `shared/build.gradle.kts` (or version catalog):
 
 ```kotlin
-dependencies {
-    implementation("io.github.vedangj72:kit-flow:1.0.4")
+// gradle/libs.versions.toml
+[versions]
+kitflow = "1.1.0"
+
+[libraries]
+kitflow = { module = "io.github.vedangj72:kit-flow", version.ref = "kitflow" }
+
+// shared/build.gradle.kts
+commonMain.dependencies {
+    implementation(libs.kitflow)
 }
 ```
-
-Use the latest version you have published.
-
-> [!IMPORTANT]
-> `Adaptive.layoutValue` and `AdaptiveFlowGrid` are source features on this branch. The latest published Maven Central version may not include them yet.
 
 ---
 
 ## Wrap Your App
 
-Use `AdaptiveKitProvider` once near the root of your Compose app.
+Use `AdaptiveKitProvider` once near the root of your Compose app:
 
 ```kotlin
 @Composable
@@ -74,20 +86,20 @@ fun App() {
 }
 ```
 
-Everything inside this provider can use KitFlow APIs.
+Everything inside this provider can access all KitFlow responsive values, breakpoints, window metrics, and accessibility resolvers.
 
 ---
 
 ## Why KitFlow
 
-KitFlow solves the problem of keeping adaptive UI logic readable, reusable, and shared across platforms.
+KitFlow solves the problem of keeping adaptive UI logic readable, reusable, and shared across platforms:
 
-- Shared UI without duplicating screens for every form factor
-- Responsive layout decisions that stay in one place
-- Adaptive components that respond to screen size and constraints
-- Orientation handling for mobile and tablet experiences
-- Breakpoints that stay explicit and easy to reason about
-- Better developer experience for Compose Multiplatform teams
+- **Shared UI without duplicating screens** for each individual form factor
+- **Responsive layout decisions** that stay consolidated in one place
+- **Adaptive components** responding directly to runtime screen constraints
+- **Orientation handling** for mobile and tablet experiences without state loss
+- **Explicit breakpoints** that are easy to reason about and maintain
+- **Optimal developer experience** for Compose Multiplatform teams
 
 ---
 
@@ -95,17 +107,15 @@ KitFlow solves the problem of keeping adaptive UI logic readable, reusable, and 
 
 | Feature | What it gives you |
 | --- | --- |
-| `Adaptive.value()` | Responsive values for layout, spacing, typography, and more |
-| `Adaptive.onOrientationChange()` | Clear portrait and landscape branching |
-| Adaptive Grid | Constraint-aware grid behavior for reusable components |
-| Responsive Padding | Padding that scales with screen class |
-| Responsive Typography | Text sizing that stays readable across devices |
-| Adaptive Navigation | Layout decisions that fit the current surface |
-| Shared Compose UI | One codebase for all supported platforms |
-| Android | Native Android support |
-| iOS | Native iOS support |
-| Desktop | JVM desktop support |
-| Web | JS and Wasm support |
+| `Adaptive.value()` | Responsive values for layout, spacing, typography, dimensions, shapes, and colors |
+| `Adaptive.onOrientationChange()` | Clear declarative portrait and landscape branching |
+| `AdaptiveFlowGrid` | Constraint-aware auto-fitting grid for reusable components |
+| `KitDrawerScaffold` | Desktop docked sidebar & mobile slide-out overlay drawer scaffolding |
+| `KitNavScaffold` | Desktop sticky top navbar & mobile bottom app-bar scaffolding |
+| `Adaptive.layoutValue()` | Width-based reflow decisions for panels, columns, and reflow triggers |
+| `rememberWindowInfo()` | Stable screen classification and real-time window metrics |
+| Responsive Accessibility | Font-scale-aware grid wrapping and `AdaptiveAccessibleLayout` |
+| Shared Compose UI | Single codebase across Android, iOS, JVM Desktop, and Wasm/JS Web |
 
 ---
 
@@ -113,17 +123,7 @@ KitFlow solves the problem of keeping adaptive UI logic readable, reusable, and 
 
 https://res.cloudinary.com/dgsreulhd/video/upload/v1786300968/adptive_value_explination_qzdpky.mp4
 
-Every UI value can adapt based on screen size.
-
-Use it for:
-
-- Padding
-- Spacing
-- Typography
-- Card width
-- Button height
-- Corner radius
-- Icon sizing
+Every UI value can adapt based on screen size:
 
 ```kotlin
 val previewPadding = Adaptive.value(
@@ -159,24 +159,7 @@ val previewFontScale = Adaptive.value(
 )
 ```
 
-`Adaptive.value()` is not limited to dimensions.
-
-It can adapt
-
-- `Dp`
-- `Sp`
-- `Float`
-- `Boolean`
-- `Int`
-- `Colors`
-- `Shapes`
-- Any custom value
-
-This becomes the foundation for creating responsive Compose UIs.
-
-> [!NOTE]
-> All adaptive APIs work together to produce a single responsive UI across every supported platform.
-> Use them wisely instead of writing multiple screen implementations.
+`Adaptive.value()` is not limited to dimensions. It can adapt `Dp`, `Sp`, `Float`, `Boolean`, `Int`, `Color`, `Shape`, and any custom type based on shortest-side device metrics.
 
 ---
 
@@ -186,7 +169,7 @@ https://res.cloudinary.com/dgsreulhd/video/upload/v1786300958/orientation_androi
 
 https://res.cloudinary.com/dgsreulhd/video/upload/v1786300967/orientation_ios_qeoiih.mp4
 
-Use `Adaptive.onOrientationChange(...)` when portrait and landscape should genuinely render different content.
+Use `Adaptive.onOrientationChange(...)` when portrait and landscape should genuinely render different layouts:
 
 ```kotlin
 Adaptive.onOrientationChange(
@@ -199,19 +182,13 @@ Adaptive.onOrientationChange(
 )
 ```
 
-KitFlow automatically renders the correct UI based on orientation, so the layout decision stays declarative and easy to follow.
-
-**Important note**
-
-For Desktop and Desktop-class layouts, KitFlow treats the layout as Landscape by default.
-
-Orientation based adaptation is primarily intended for mobile and tablet experiences.
+*Note: For Desktop and Desktop-class layouts, KitFlow treats the layout as Landscape by default.*
 
 ---
 
 ## Window Info
 
-Read current window state with `rememberWindowInfo()`.
+Read current window metrics anywhere in Compose using `rememberWindowInfo()`:
 
 ```kotlin
 val info = rememberWindowInfo()
@@ -222,20 +199,14 @@ Text("screenClass: ${info.screenClass}")
 Text("orientation: ${info.orientation}")
 ```
 
-Important difference:
-
-```text
-screenClass = stable screen class based on shortest side
-orientation = Portrait / Landscape / Square / Unknown
-```
-
-This prevents a phone from being treated like a tablet only because it rotated.
+- `screenClass`: Stable screen class based on shortest side (prevents phone from being categorized as a tablet upon rotation).
+- `orientation`: `Portrait`, `Landscape`, `Square`, or `Unknown`.
 
 ---
 
 ## Adaptive Layout Decisions
 
-Use `Adaptive.layoutValue(...)` when a value should follow the current available width, including rotation, split screen, and window resizing.
+Use `Adaptive.layoutValue(...)` when a value should follow the current available width, including rotation, split screen, and window resizing:
 
 ```kotlin
 val paneCount = Adaptive.layoutValue(
@@ -247,13 +218,13 @@ val paneCount = Adaptive.layoutValue(
 )
 ```
 
-`Adaptive.value(...)` remains shortest-side based for stable visual values; `Adaptive.layoutValue(...)` is width based for reflow decisions.
+`Adaptive.value(...)` is shortest-side based for visual stability; `Adaptive.layoutValue(...)` is width based for reflow decisions.
 
 ---
 
 ## AdaptiveFlowGrid
 
-`AdaptiveFlowGrid` automatically fits equal-width columns inside its actual parent constraints. This makes reusable components respond to phones, rotation, split screen, and resizable windows without device-name checks.
+`AdaptiveFlowGrid` automatically fits equal-width columns inside its actual parent constraints:
 
 ```kotlin
 import com.adaptive.kit_flow.layout.AdaptiveFlowGrid
@@ -272,34 +243,158 @@ AdaptiveFlowGrid(
 }
 ```
 
-Large system text increases the effective minimum column width by default, so the grid wraps earlier instead of squeezing text. Set `fontScaleAware = false` only when the content does not contain text.
-
-The grid is eager and is intended for a small group of panels, cards, or controls. Continue using `LazyVerticalGrid` for long or unbounded collections.
-
-Apply safe-area or window-inset padding outside the grid; the remaining usable width is then handled automatically. Children keep their natural height. If a parent imposes a smaller height, use scrolling, a lazy grid, or opt in to `clipOverflow = true` when clipped overflow is the intended behavior.
+- When system text scale increases, `AdaptiveFlowGrid` increases effective minimum column width by default, wrapping earlier instead of clipping text.
+- Eager layout intended for small/medium groups of cards, controls, or dashboards. Use `LazyVerticalGrid` for unbounded lists.
 
 ---
 
-## Supported Platforms
+## Component 1: KitDrawerScaffold & KitDrawerNavigator
 
-- Android
-- iOS
-- Desktop
-- Web
+A complete, responsive drawer navigation scaffolding system.
+
+### Responsive Behavior
+- **Wide Screens (Desktop & Web):** The drawer is permanently docked as a sidebar on the left, side-by-side with your content.
+- **Compact Screens (Phones & Tablets):** Automatically converts into a slide-out drawer overlay with animated backdrop scrim and hamburger button.
+
+### Complete Usage Example
+
+```kotlin
+import com.adaptive.kit_flow.modules.kitcomponent.scaffoldings.KitDrawerScaffold
+import com.adaptive.kit_flow.modules.kitcomponent.components.KitDrawerNavigator
+import com.adaptive.kit_flow.modules.kitcomponent.utils.KitNavItem
+
+val navItems = listOf(
+    KitNavItem(id = "home", title = "Home", path = "/home"),
+    KitNavItem(id = "docs", title = "Documentation", path = "/docs"),
+    KitNavItem(id = "components", title = "Components", path = "/components")
+)
+
+// High-level Scaffolding
+KitDrawerScaffold(
+    navItems = navItems,
+    activeItem = currentItem,
+    header = {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Image(painter = painterResource(Res.drawable.kitflow_icon), contentDescription = null, modifier = Modifier.size(32.dp))
+            Spacer(Modifier.width(8.dp))
+            Text("KitFlow App", fontWeight = FontWeight.Bold)
+        }
+    },
+    drawerFooter = {
+        Text("© 2026 KitFlow", fontSize = 11.sp, color = Color.Gray)
+    },
+    body = { activeItem ->
+        when (activeItem.id) {
+            "home" -> HomeScreen()
+            "docs" -> DocsScreen()
+            "components" -> ComponentsScreen()
+        }
+    }
+)
+```
+
+### Standalone KitDrawerNavigator
+
+If you want custom topbars or custom layouts while reusing the drawer navigation:
+
+```kotlin
+KitDrawerNavigator(
+    navItems = navItems,
+    activeItem = activeNavItem,
+    onItemSelected = { item -> navigateTo(item.id) },
+    header = { DrawerHeader() },
+    drawerFooter = { DrawerFooter() },
+    drawerWidth = 260.dp
+)
+```
+
+### Pattern: Escaping the Drawer Shell (e.g. Login / Fullscreen)
+
+To deliberately render full-bleed screens without the drawer or top bar, define a root sealed route outside the scaffold:
+
+```kotlin
+sealed class AppRoute {
+    object Login : AppRoute()          // Full-bleed screen, NO shell
+    object FullscreenDemo : AppRoute() // Full-bleed screen, NO shell
+    object Docs : AppRoute()           // Uses the KitDrawerScaffold shell
+}
+
+@Composable
+fun App() {
+    var appRoute by remember { mutableStateOf<AppRoute>(AppRoute.Docs) }
+
+    when (appRoute) {
+        is AppRoute.Login -> {
+            // Completely escapes the shell: No drawer, no toolbar!
+            LoginScreen(onLoginSuccess = { appRoute = AppRoute.Docs })
+        }
+        is AppRoute.FullscreenDemo -> {
+            FullscreenDemoScreen(onExit = { appRoute = AppRoute.Docs })
+        }
+        is AppRoute.Docs -> {
+            // Shell only wraps authenticated documentation screens
+            KitDrawerScaffold(
+                navItems = navItems,
+                body = { currentItem ->
+                    DocsScreen(currentItem)
+                }
+            )
+        }
+    }
+}
+```
+
+---
+
+## Component 2: KitNavScaffold
+
+Adaptive toolbar and app-bar scaffolding for Compose Multiplatform.
+
+### Responsive Behavior
+- **Wide Screens (Desktop & Web):** Displays a sleek horizontal navigation bar at the top with inline navigation items, title, and actions.
+- **Compact Screens (Phones):** Seamlessly transforms into a compact top app bar with hamburger menu or bottom navigation bar according to your target ergonomics.
+
+### Complete Usage Example
+
+```kotlin
+import com.adaptive.kit_flow.modules.kitcomponent.scaffoldings.KitNavScaffold
+import com.adaptive.kit_flow.modules.kitcomponent.utils.KitNavItem
+
+val navItems = listOf(
+    KitNavItem(id = "dashboard", title = "Dashboard", path = "/dashboard"),
+    KitNavItem(id = "analytics", title = "Analytics", path = "/analytics"),
+    KitNavItem(id = "settings", title = "Settings", path = "/settings")
+)
+
+KitNavScaffold(
+    navItems = navItems,
+    activeItem = currentItem,
+    header = {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Image(painter = painterResource(Res.drawable.kitflow_icon), contentDescription = null, modifier = Modifier.size(28.dp))
+            Spacer(Modifier.width(8.dp))
+            Text("Analytics Suite", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+        }
+    },
+    body = { activeItem ->
+        when (activeItem.id) {
+            "dashboard" -> DashboardScreen()
+            "analytics" -> AnalyticsScreen()
+            "settings" -> SettingsScreen()
+        }
+    }
+)
+```
 
 ---
 
 ## Accessibility
 
-KitFlow helps keep UI stable when font scale increases.
+KitFlow keeps UI resilient and accessible when font scale increases:
 
 ```kotlin
 val accessibility = LocalAdaptiveAccessibilityInfo.current
-```
 
-Available values:
-
-```kotlin
 accessibility.fontScale
 accessibility.fontScaleClass
 accessibility.minimumTouchTarget
@@ -308,7 +403,8 @@ accessibility.highContrast
 accessibility.differentiateWithoutColor
 ```
 
-Use `AdaptiveAccessibleLayout` when a `Row` may break with large text.
+### AdaptiveAccessibleLayout
+Swaps between a `Row` and a `Column` when large system accessibility fonts are active:
 
 ```kotlin
 AdaptiveAccessibleLayout(
@@ -327,26 +423,17 @@ AdaptiveAccessibleLayout(
 )
 ```
 
-Use `adaptiveTouchTarget()` for clickable UI.
-
+### Adaptive Touch Targets & Semantics
 ```kotlin
 Modifier
     .adaptiveTouchTarget()
     .clickable { onClick() }
-```
 
-Use `adaptiveSemantics()` for clear labels and state.
-
-```kotlin
 Modifier.adaptiveSemantics(
     label = "Download file",
     role = Role.Button
 )
-```
 
-Use `AdaptiveIconButton` for icon-only actions.
-
-```kotlin
 AdaptiveIconButton(
     icon = Icons.Default.Close,
     contentDescription = "Close",
@@ -354,86 +441,46 @@ AdaptiveIconButton(
 )
 ```
 
-**Icon-only buttons must have meaningful labels.**
+---
+
+## Hosted Video Demonstrations
+
+All demonstrations are available as hosted Cloudinary MP4 streams:
+
+| Demo | Hosted URL | Details |
+| --- | --- | --- |
+| **Main UI Showcase** | [Watch Demo](https://res.cloudinary.com/dgsreulhd/video/upload/v1786301010/main_ui_demo_rcjhan.mp4) | Comprehensive adaptive resizing and breakpoint showcase |
+| **Adaptive.value()** | [Watch Demo](https://res.cloudinary.com/dgsreulhd/video/upload/v1786300968/adptive_value_explination_qzdpky.mp4) | Visual explanation of shortest-side value scaling |
+| **Android Orientation** | [Watch Demo](https://res.cloudinary.com/dgsreulhd/video/upload/v1786300958/orientation_android_olbjfh.mp4) | Orientation transitions on Android mobile |
+| **iOS Orientation** | [Watch Demo](https://res.cloudinary.com/dgsreulhd/video/upload/v1786300967/orientation_ios_qeoiih.mp4) | Fluid device rotation handling on iOS |
+
+---
+
+## Supported Platforms
+
+- **Android:** API 24+ with full Jetpack Compose integration
+- **iOS:** iOS 14+ via UIKit & Compose Multiplatform
+- **Desktop:** macOS, Windows, Linux via JVM
+- **Web:** Kotlin/Wasm and Kotlin/JS
 
 ---
 
 ## Compose Layout Notes
 
-There are certain things to keep in mind while making layouts or components in Jetpack Compose:
-
-- Keep the layout system in mind.
-- Draw the layout on paper first when the UI has multiple states.
-- Consider portrait and landscape mode, along with state changes.
-- Avoid fixed size, height, and width unless the element truly requires it.
-- Do not hardcode height, width, or size for responsive containers.
-- Prefer `aspectRatio(...)`, `weight(...)`, `fillMaxWidth()`, `widthIn(...)`, `heightIn(...)`, and constraints.
-- For text, use `maxLines`, wrapping strategy, and `TextOverflow.Ellipsis` where needed.
-- Use vertical scroll for simple static content that may overflow.
-- Use `LazyColumn` or `LazyRow` for lists.
-- Review official Compose adaptive layouts and pick the correct layout strategy.
-- If KitFlow fits the case, use KitFlow to keep adaptive values consistent.
-
-Example with official window size class style:
-
-```kotlin
-when (windowSizeClass) {
-    WindowWidthSizeClass.Compact -> {
-        Column {
-            LeftPanel()
-            RightPanel()
-        }
-    }
-
-    WindowWidthSizeClass.Medium,
-    WindowWidthSizeClass.Expanded -> {
-        Row {
-            LeftPanel(
-                modifier = Modifier.weight(1f)
-            )
-
-            RightPanel(
-                modifier = Modifier.weight(1f)
-            )
-        }
-    }
-}
-```
-
-With KitFlow, the same idea can be kept inside your SDK-driven layout flow:
-
-```kotlin
-val info = rememberWindowInfo()
-
-AdaptiveFlowGrid(
-    minColumnWidth = 240.dp,
-    maxColumns = 2,
-    horizontalSpacing = 16.dp,
-    verticalSpacing = 16.dp
-) {
-    Card {
-        LeftPanel(modifier = Modifier.padding(16.dp))
-    }
-
-    Card {
-        RightPanel(modifier = Modifier.padding(16.dp))
-    }
-}
-```
-
-**KitFlow does not remove the need to understand Compose layout.** It helps you arrange adaptive code in one clear flow.
+- Keep the layout system in mind: draw multi-state layouts before writing code.
+- Avoid hardcoding fixed heights or widths for responsive containers.
+- Prefer `weight(...)`, `aspectRatio(...)`, `fillMaxWidth()`, and `widthIn(...)`.
+- Use `AdaptiveFlowGrid` for self-arranging auto-column layouts.
+- Use `Adaptive.value(...)` for stable shortest-side visual values and `Adaptive.layoutValue(...)` for reflow decisions.
 
 ---
 
 ## Official Notes
 
-Keep these official docs close while designing adaptive Compose UI:
-
 - [Support different display sizes](https://developer.android.com/develop/adaptive-apps/guides/support-different-display-sizes)
 - [Build adaptive apps](https://developer.android.com/develop/ui/compose/build-adaptive-apps)
 - [Compose layout basics](https://developer.android.com/develop/ui/compose/layouts/basics)
 - [Adaptive do's and don'ts](https://developer.android.com/develop/adaptive-apps/guides/adaptive-dos-and-donts)
-- [Material Design 3 in Compose](https://developer.android.com/develop/ui/compose/designsystems/material3)
 
 ---
 
@@ -441,26 +488,4 @@ Keep these official docs close while designing adaptive Compose UI:
 
 **KitFlow should resolve adaptive context and adaptive values, not own the UI.**
 
-Developers keep using normal Compose components. KitFlow helps those components adapt.
-
----
-
-## Future Vision
-
-What we expect from contributors:
-
-1. Make it robust
-1. Make it easy to use
-1. Make component-based, platform-friendly layouts so importing and updating the codebase stays simple
-
-Contributions should push KitFlow toward a clearer shared SDK experience, not toward platform-specific duplication.
-
----
-
-## Notes
-
-- `Adaptive.value()` stays shortest-side based for stable visual values.
-- `Adaptive.layoutValue()` follows current width for reflow decisions.
-- `AdaptiveFlowGrid` is intended for small groups of panels, cards, or controls.
-- Desktop and Desktop-class layouts are treated as Landscape by default for orientation handling.
-- The detailed Compose and adaptive guidelines above are meant to stay at the end of the README so the learning path remains: install, wrap, then build.
+Developers continue using standard Compose components. KitFlow provides the adaptive decisions to make them responsive.
