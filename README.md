@@ -1,3 +1,7 @@
+<img width="1200" height="1200" alt="KitFlow logo" src="https://github.com/user-attachments/assets/38ab69f7-ee8e-411d-ac40-c91ab60d65cc" />
+
+<img width="1200" height="1200" alt="KitFlow logo" src="https://github.com/user-attachments/assets/38ab69f7-ee8e-411d-ac40-c91ab60d65cc" />
+
 # KitFlow
 
 https://res.cloudinary.com/dgsreulhd/video/upload/v1786301010/main_ui_demo_rcjhan.mp4
