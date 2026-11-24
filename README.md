@@ -1,6 +1,4 @@
-<img width="1200" height="1200" alt="KitFlow logo" src="https://github.com/user-attachments/assets/38ab69f7-ee8e-411d-ac40-c91ab60d65cc" />
-
-<img width="1200" height="1200" alt="KitFlow logo" src="https://github.com/user-attachments/assets/38ab69f7-ee8e-411d-ac40-c91ab60d65cc" />
+<img width="120" height="120" alt="KitFlow logo" src="https://github.com/user-attachments/assets/38ab69f7-ee8e-411d-ac40-c91ab60d65cc" />
 
 # KitFlow
 
@@ -38,14 +36,6 @@ KitFlow helps you create responsive layouts across Android, iOS, Desktop and Web
 15. [Compose Layout Notes](#compose-layout-notes)
 16. [Official Notes](#official-notes)
 17. [Design Principle & Future Vision](#design-principle)
-
----
-
-## KitFlow Mark
-
-<img src="shared/src/commonMain/composeResources/drawable/kitflow_icon.png" alt="KitFlow logo" width="160" height="160" style="border-radius: 24px;" />
-
-KitFlow is built around a clean, reusable adaptive layer. The mark reflects that idea: a shared core with responsive motion and layout around it.
 
 ---
 
