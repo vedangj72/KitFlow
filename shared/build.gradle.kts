@@ -12,8 +12,8 @@ plugins {
     alias(libs.plugins.mavenPublish)
 }
 
-group = "io.github.vedangj72"
-version = "1.1.0"
+group = "in.kitflow"
+version = "1.1.1"
 
 kotlin {
     // iOS targets

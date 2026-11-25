@@ -54,16 +54,18 @@ Add the KitFlow dependency in your `shared/build.gradle.kts` (or version catalog
 ```kotlin
 // gradle/libs.versions.toml
 [versions]
-kitflow = "1.1.0"
+kitflow = "1.1.1"
 
 [libraries]
-kitflow = { module = "io.github.vedangj72:kit-flow", version.ref = "kitflow" }
+kitflow = { module = "in.kitflow:kit-flow", version.ref = "kitflow" }
 
 // shared/build.gradle.kts
 commonMain.dependencies {
     implementation(libs.kitflow)
 }
 ```
+
+> **Note:** Starting with `1.1.1`, KitFlow is published under `in.kitflow:kit-flow` (replacing the previous `io.github.vedangj72:kit-flow` coordinates).
 
 ---
 
