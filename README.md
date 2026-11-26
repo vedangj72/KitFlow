@@ -36,6 +36,7 @@ KitFlow helps you create responsive layouts across Android, iOS, Desktop and Web
 15. [Compose Layout Notes](#compose-layout-notes)
 16. [Official Notes](#official-notes)
 17. [Design Principle & Future Vision](#design-principle)
+18. [AI Agent Integration](#ai-agent-integration)
 
 ---
 
@@ -485,3 +486,43 @@ All demonstrations are available as hosted Cloudinary MP4 streams:
 **KitFlow should resolve adaptive context and adaptive values, not own the UI.**
 
 Developers continue using standard Compose components. KitFlow provides the adaptive decisions to make them responsive.
+
+---
+
+## AI Agent Integration
+
+KitFlow ships an official [Agent Skill](https://agentskills.io/) (`skills/kitflow/SKILL.md`) so AI coding assistants understand KitFlow's exact `in.kitflow:kit-flow:1.1.1` APIs, breakpoints, navigation scaffolds, and cross-platform patterns without guessing signatures or imports.
+
+### Install the KitFlow Skill
+
+```bash
+npx skills add vedangj72/KitFlow --skill kitflow
+```
+
+### Supported AI Coding Agents
+
+Works with Agent Skills-compatible tools via [Skills CLI](https://github.com/vercel-labs/skills), including:
+- **Cursor**
+- **Claude Code**
+- **OpenAI Codex**
+- **GitHub Copilot**
+- **Other `agentskills.io` compatible agents**
+
+### Benefits
+
+- Uses verified `in.kitflow:kit-flow:1.1.1` Maven coordinates and `com.adaptive.kit_flow` imports.
+- Applies `AdaptiveKitProvider`, `Adaptive.value` vs `Adaptive.layoutValue`, `AdaptiveFlowGrid`, `KitNavScaffold`, and `KitDrawerScaffold` accurately.
+- Follows Kotlin Multiplatform `commonMain` best practices across Android, iOS, Desktop, and Web.
+
+### Example Prompts
+
+- *"Add KitFlow `1.1.1` to my Kotlin Multiplatform project and wrap `App()` in `AdaptiveKitProvider`."*
+- *"Build a responsive dashboard in `commonMain` using `KitDrawerScaffold` and `AdaptiveFlowGrid`."*
+- *"Create an adaptive SPA layout with `KitNavScaffold`, a brand header, and footer navigation."*
+- *"Make this icon button and card row adapt to large system font scales using KitFlow accessibility APIs."*
+
+### Resources
+
+- **Official KitFlow Website:** https://kitflow.in/
+- **Agent Skills Specification:** https://agentskills.io/
+- **Skills.sh Directory:** https://skills.sh/ *(automatically indexed at `https://skills.sh/vedangj72/KitFlow/kitflow` after publishing to GitHub and installing via `npx skills add`)*
